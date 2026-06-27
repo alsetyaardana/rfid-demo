@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Batch Reconciliation - Hotel RFID Operations Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#bcc7de",
+                    "tertiary": "#924628",
+                    "primary-fixed": "#89f5e7",
+                    "surface-variant": "#dee4e1",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-surface": "#171d1c",
+                    "surface-container": "#eaefed",
+                    "inverse-surface": "#2c3130",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3fb",
+                    "primary": "#00685f",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-surface-variant": "#3d4947",
+                    "outline-variant": "#bcc9c6",
+                    "tertiary-container": "#b05e3d",
+                    "surface-dim": "#d6dbd9",
+                    "surface-container-low": "#f0f5f2",
+                    "on-primary-fixed": "#00201d",
+                    "on-error-container": "#93000a",
+                    "surface": "#f5faf8",
+                    "background": "#f5faf8",
+                    "on-primary-container": "#f4fffc",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#edf2f0",
+                    "on-secondary-fixed": "#111c2d",
+                    "primary-container": "#008378",
+                    "on-background": "#171d1c",
+                    "on-tertiary-container": "#fffbff",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "on-secondary-container": "#586377",
+                    "surface-container-high": "#e4e9e7",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "tertiary-fixed": "#ffdbce",
+                    "secondary-container": "#d5e0f8",
+                    "inverse-primary": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#006a61",
+                    "surface-container-highest": "#dee4e1",
+                    "outline": "#6d7a77",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f73",
+                    "surface-bright": "#f5faf8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "header_height": "72px",
+                    "sidebar_width": "260px",
+                    "container_max": "1440px",
+                    "gutter": "24px",
+                    "margin": "32px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "code-data": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "code-data": ["16px", {"lineHeight": "24px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="bg-on-secondary-fixed text-primary-fixed w-[260px] h-full fixed left-0 top-0 flex flex-col py-margin z-20">
+<div class="px-6 mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed">Hotel RFID</h1>
+<p class="font-label-sm text-label-sm text-secondary-fixed-dim">Operations Platform</p>
+</div>
+<ul class="flex-1 px-4 space-y-1">
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">barcode_scanner</span>
+<span class="font-label-sm text-label-sm">RFID Scan</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span>
+<span class="font-label-sm text-label-sm">Linen Master</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">local_laundry_service</span>
+<span class="font-label-sm text-label-sm">Laundry Batches</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 bg-primary-container text-on-primary-container font-bold transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Reconciliation</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">sensors</span>
+<span class="font-label-sm text-label-sm">Device Activity</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+<span class="font-label-sm text-label-sm">Transaction History</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined mr-3">precision_manufacturing</span>
+<span class="font-label-sm text-label-sm">Asset Management</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant h-[72px] fixed top-0 right-0 w-[calc(100%-260px)] flex justify-between items-center px-gutter z-10">
+<div class="flex items-center">
+<span class="font-headline-md text-headline-md font-semibold text-on-surface">Hotel Ops Admin</span>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-code-data font-code-data focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Search..." type="text"/>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="Hotel Ops Admin Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, professional headshot photo of an administrator, serving as an avatar. The lighting is clean and bright. White background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_wHQ3SxaaWSdeedOh-iCY7q19KX2zuGM1YH2uPqTLXJ8NsQskoaXyGmfAAqlthBrqI6NXqNMwNTOKzsXghiuIyZyJnvUYtlzAK6MGSfHQ1FP8hNmD8nWeiNFDAOta9t_PgAix2BjPdtgkmGIlBj_Uu7aryCh0FRlSErqcXm1E4qe7EDeHEYEAX4lwQxKyQF7CxBCU1K7gurpsVLNUcjaHorTA3GstUNi070bje1XU6KwUEgIk_yH3"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[260px] mt-[72px] p-margin w-full h-[calc(100vh-72px)] overflow-y-auto bg-background">
+<div class="max-w-[1440px] mx-auto space-y-6">
+<!-- Page Header -->
+<div class="flex justify-between items-end border-b border-outline-variant pb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Batch Reconciliation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Batch #B-8924-LX • Returned Today, 08:45 AM</p>
+</div>
+<div class="flex space-x-3">
+<button class="px-4 py-2 border border-primary text-primary font-label-sm text-label-sm rounded hover:bg-surface-container-low transition-colors">Export Report</button>
+<button class="px-4 py-2 bg-primary text-on-primary font-label-sm text-label-sm rounded hover:bg-on-primary-fixed-variant transition-colors">Acknowledge Discrepancy</button>
+</div>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Sent Items</span>
+<span class="font-display text-display text-on-surface">1,240</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Returned Items</span>
+<span class="font-display text-display text-on-surface">1,239</span>
+</div>
+<div class="bg-error-container p-6 rounded-xl border border-error/20 shadow-sm flex flex-col">
+<span class="font-label-sm text-label-sm text-on-error-container uppercase tracking-wider mb-2">Outstanding</span>
+<span class="font-display text-display text-error">1</span>
+</div>
+</div>
+<!-- Operational Insight Panel -->
+<div class="bg-[#FFF4E5] border-l-4 border-[#FFB020] p-4 rounded-r-lg flex items-start space-x-3 shadow-sm">
+<span class="material-symbols-outlined text-[#B27B16] mt-0.5">warning</span>
+<div>
+<h3 class="font-headline-md text-[18px] leading-[24px] font-semibold text-[#805810]">Operational Insight</h3>
+<p class="font-body-md text-body-md text-[#805810] mt-1">1 linen item has not returned from this laundry batch. The exact linen identity and last known movement are shown below.</p>
+</div>
+</div>
+<!-- Outstanding Items Table -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant bg-surface">
+<h3 class="font-headline-md text-headline-md text-on-surface">Outstanding Items Detail</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Linen ID</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">EPC</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Linen Type</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Known Location</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Scan Time</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Checkpoint</th>
+<th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors bg-white">
+<td class="py-4 px-6 font-code-data text-code-data text-on-surface bg-surface-container-low/50">LNN-8821-T</td>
+<td class="py-4 px-6 font-code-data text-code-data text-on-surface bg-surface-container-low/50">3034AABBCCDDEEFF00112233</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Bath Towel - Premium</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Loading Dock B</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Yesterday, 14:30</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Reader_Dock_02</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FFF4E5] text-[#B27B16] border border-[#FFB020]/30">
+                                        Missing
+                                    </span>
+</td>
+</tr>
+<!-- Table Empty State Placeholder (hidden) -->
+<!-- <tr class="hidden"><td colspan="7" class="py-8 text-center text-on-surface-variant font-body-md">No outstanding items found.</td></tr> -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</body></html>

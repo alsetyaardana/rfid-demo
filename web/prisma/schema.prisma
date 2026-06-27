@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Linen {
+  id                 String            @id @default(cuid())
+  linenCode          String            @unique
+  epc                String            @unique
+  linenType          String
+  currentStatus      String
+  currentLocationId  String
+  laundryCycleCount  Int               @default(0)
+  lastScannedAt      DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  currentLocation    Location          @relation(fields: [currentLocationId], references: [id])
+  transactionItems   TransactionItem[]
+
+  @@index([currentStatus])
+  @@index([currentLocationId])
+}
+
+model Location {
+  id                  String         @id @default(cuid())
+  code                String         @unique
+  name                String
+  locationType        String
+  linenItems          Linen[]
+  sourceBatches       LaundryBatch[] @relation("BatchSource")
+  destinationBatches  LaundryBatch[] @relation("BatchDestination")
+  sourceTransactions  Transaction[]  @relation("TransactionSource")
+  destinationTransactions Transaction[] @relation("TransactionDestination")
+  assets              Asset[]
+}
+
+model LaundryBatch {
+  id                    String              @id @default(cuid())
+  batchCode             String              @unique
+  sourceLocationId      String
+  destinationLocationId String
+  status                String
+  createdAt             DateTime            @default(now())
+  completedAt           DateTime?
+  sourceLocation        Location            @relation("BatchSource", fields: [sourceLocationId], references: [id])
+  destinationLocation   Location            @relation("BatchDestination", fields: [destinationLocationId], references: [id])
+  transactions          Transaction[]
+}
+
+model Transaction {
+  id                    String           @id @default(cuid())
+  transactionCode       String           @unique
+  transactionType       String
+  laundryBatchId        String?
+  readerId              String
+  operationMode         String
+  sourceLocationId      String?
+  destinationLocationId String?
+  rfidReadSessionId     String?          @unique
+  createdAt             DateTime         @default(now())
+  laundryBatch          LaundryBatch?     @relation(fields: [laundryBatchId], references: [id])
+  sourceLocation        Location?         @relation("TransactionSource", fields: [sourceLocationId], references: [id])
+  destinationLocation   Location?         @relation("TransactionDestination", fields: [destinationLocationId], references: [id])
+  rfidReadSession       RFIDReadSession?  @relation(fields: [rfidReadSessionId], references: [id])
+  items                 TransactionItem[]
+}
+
+model TransactionItem {
+  id                String           @id @default(cuid())
+  transactionId     String
+  linenId           String?
+  epc               String
+  previousStatus    String?
+  newStatus         String?
+  validationStatus  String
+  transaction       Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  linen             Linen?           @relation(fields: [linenId], references: [id])
+
+  @@index([transactionId])
+  @@index([linenId])
+  @@index([epc])
+}
+
+model RFIDReadSession {
+  id               String          @id @default(cuid())
+  clientSessionId  String          @unique
+  readerId         String
+  readerType       String
+  operationMode    String
+  checkpoint       String
+  transactionType  String
+  rawReadCount     Int
+  uniqueTagCount   Int
+  createdAt        DateTime        @default(now())
+  reads            RFIDRead[]
+  transaction      Transaction?
+}
+
+model RFIDRead {
+  id                String           @id @default(cuid())
+  sessionId         String
+  epc               String
+  rssi              Int
+  readCount         Int
+  antenna           String?
+  validationStatus  String
+  session           RFIDReadSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([epc])
+}
+
+model Asset {
+  id                 String       @id @default(cuid())
+  assetCode          String       @unique
+  epc                String       @unique
+  assetName          String
+  category           String
+  currentStatus      String
+  currentLocationId  String
+  currentLocation    Location     @relation(fields: [currentLocationId], references: [id])
+}

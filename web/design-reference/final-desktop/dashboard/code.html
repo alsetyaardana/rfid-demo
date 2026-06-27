@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Hotel RFID</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#bcc7de",
+                      "tertiary": "#924628",
+                      "primary-fixed": "#89f5e7",
+                      "surface-variant": "#dee4e1",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-surface": "#171d1c",
+                      "surface-container": "#eaefed",
+                      "inverse-surface": "#2c3130",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#d8e3fb",
+                      "primary": "#00685f",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-surface-variant": "#3d4947",
+                      "outline-variant": "#bcc9c6",
+                      "tertiary-container": "#b05e3d",
+                      "surface-dim": "#d6dbd9",
+                      "surface-container-low": "#f0f5f2",
+                      "on-primary-fixed": "#00201d",
+                      "on-error-container": "#93000a",
+                      "surface": "#f5faf8",
+                      "background": "#f5faf8",
+                      "on-primary-container": "#f4fffc",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#edf2f0",
+                      "on-secondary-fixed": "#111c2d",
+                      "primary-container": "#008378",
+                      "on-background": "#171d1c",
+                      "on-tertiary-container": "#fffbff",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "on-secondary-container": "#586377",
+                      "surface-container-high": "#e4e9e7",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "tertiary-fixed": "#ffdbce",
+                      "secondary-container": "#d5e0f8",
+                      "inverse-primary": "#6bd8cb",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#006a61",
+                      "surface-container-highest": "#dee4e1",
+                      "outline": "#6d7a77",
+                      "on-secondary": "#ffffff",
+                      "secondary": "#545f73",
+                      "surface-bright": "#f5faf8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "header_height": "72px",
+                      "sidebar_width": "260px",
+                      "container_max": "1440px",
+                      "gutter": "24px",
+                      "margin": "32px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "code-data": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "code-data": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar -->
+<nav class="w-[260px] h-full fixed left-0 top-0 bg-on-secondary-fixed flex flex-col py-margin transition-colors duration-200 z-50">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed">Hotel RFID</h1>
+<p class="font-label-sm text-label-sm text-secondary-fixed-dim">Operations Platform</p>
+</div>
+<ul class="flex-1 overflow-y-auto w-full">
+<li class="w-full pr-4">
+<a class="flex items-center gap-4 px-gutter py-3 bg-primary-container text-on-primary-container font-bold rounded-r-full font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">barcode_scanner</span>
+<span>RFID Scan</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Linen Master</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">local_laundry_service</span>
+<span>Laundry Batches</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span>Reconciliation</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span>Device Activity</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>Transaction History</span>
+</a>
+</li>
+<li class="w-full pr-4 mt-2">
+<a class="flex items-center gap-4 px-gutter py-3 text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 font-label-sm text-label-sm rounded-r-full" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span>Asset Management</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- TopNavBar -->
+<header class="h-[72px] fixed top-0 right-0 w-[calc(100%-260px)] bg-surface border-b border-outline-variant flex justify-between items-center px-gutter transition-all duration-150 z-40">
+<div class="flex items-center gap-8">
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface">Hotel Ops Admin</h2>
+<div class="relative hidden lg:block w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-code-data text-code-data text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Search EPC, Batches, Readers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold ml-2">
+                AD
+            </div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[260px] pt-[72px] min-h-screen p-margin flex justify-center">
+<div class="max-w-[1440px] w-full flex flex-col gap-gutter">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Operations Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time overview of hotel linen inventory and RFID activity.</p>
+</div>
+<button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-sm text-label-sm px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined">barcode_scanner</span>
+                    Start New Scan
+                </button>
+</div>
+<!-- Active Demo Scenario Panel -->
+<div class="bg-surface-container-lowest border border-primary/30 rounded-xl p-6 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                            Active Demo Scenario
+                        </h3>
+<div class="font-body-md text-body-md text-on-surface-variant">
+                            Tracking Laundry Batch <span class="font-code-data text-code-data bg-surface-container-low px-2 py-1 rounded text-on-surface">LB-DEMO-001</span>
+<span class="mx-2 text-outline-variant">|</span>
+<span class="font-medium text-on-surface">8</span> linen sent
+                            <span class="mx-2 text-outline-variant">|</span>
+<span class="font-medium text-primary-container">7</span> linen returned
+                            <span class="mx-2 text-outline-variant">|</span>
+<span class="font-medium text-error">1</span> linen outstanding
+                        </div>
+<div class="mt-4 flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span>
+                            Workflow: RFID Scan → Laundry Transaction → Return → Reconciliation → Outstanding Linen
+                        </div>
+</div>
+<button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-sm text-label-sm px-6 py-3 rounded-lg transition-colors whitespace-nowrap shadow-sm">
+                        Open Reconciliation
+                    </button>
+</div>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Total Linen</span>
+<span class="material-symbols-outlined text-outline">inventory_2</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-surface">12,450</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Available</span>
+<span class="material-symbols-outlined text-primary-container">check_circle</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-primary-container">4,120</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">In Use (Rooms)</span>
+<span class="material-symbols-outlined text-outline">bed</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-surface">5,830</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">In Laundry</span>
+<span class="material-symbols-outlined text-outline">local_laundry_service</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-surface">2,455</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm relative overflow-hidden">
+<div class="absolute bottom-0 left-0 w-full h-1 bg-error"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Outstanding</span>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-error">45</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Main Chart Panel -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm flex flex-col h-[400px]">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Linen Status Overview</h3>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex-1 p-6 relative flex items-center justify-center bg-surface-container-low/30">
+<!-- Placeholder for Chart -->
+<div class="text-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[48px] mb-2 opacity-50">bar_chart</span>
+<p class="font-body-md text-body-md">Status Distribution Chart</p>
+<p class="font-label-sm text-label-sm opacity-70 mt-1">Total items by category (Available, In Use, Laundry, Outstanding)</p>
+</div>
+</div>
+</div>
+<!-- Secondary Panels -->
+<div class="flex flex-col gap-gutter">
+<!-- Active Laundry Batches -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm flex-1 flex flex-col">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+<h3 class="font-label-sm text-label-sm font-semibold text-on-surface uppercase tracking-wider">Active Batches</h3>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="p-0 overflow-y-auto">
+<ul class="divide-y divide-outline-variant">
+<li class="p-4 hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-code-data text-code-data text-on-surface text-sm">LB-2023-1104</span>
+<span class="bg-primary/10 text-primary font-label-sm text-[12px] px-2 py-0.5 rounded">Processing</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Main Housekeeping</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">1,204 items</span>
+</div>
+</li>
+<li class="p-4 bg-surface-container-low border-l-2 border-primary">
+<div class="flex justify-between items-start mb-1">
+<span class="font-code-data text-code-data text-on-surface text-sm">LB-DEMO-001</span>
+<span class="bg-error/10 text-error font-label-sm text-[12px] px-2 py-0.5 rounded">Reconciliation</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Demo Scan Area</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">8 items</span>
+</div>
+</li>
+<li class="p-4 hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-code-data text-code-data text-on-surface text-sm">LB-2023-1103</span>
+<span class="bg-tertiary/10 text-tertiary font-label-sm text-[12px] px-2 py-0.5 rounded">Returning</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Pool Towels</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">450 items</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Last Reader Activity -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm flex-1 flex flex-col">
+<div class="p-4 border-b border-outline-variant bg-surface-container-low/50">
+<h3 class="font-label-sm text-label-sm font-semibold text-on-surface uppercase tracking-wider">Recent Reader Activity</h3>
+</div>
+<div class="p-4 flex-1">
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
+<span class="material-symbols-outlined text-primary text-[16px]">sensors</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface text-sm">
+                                            Scan completed at <span class="font-medium">Dock A</span>
+</p>
+<p class="font-code-data text-code-data text-on-surface-variant text-[12px] mt-1">Reader ID: RDR-DCK-01</p>
+<p class="font-label-sm text-label-sm text-outline mt-1 text-[12px]">2 mins ago</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">wifi_tethering</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface text-sm">
+                                            Handheld Scanner synced
+                                        </p>
+<p class="font-code-data text-code-data text-on-surface-variant text-[12px] mt-1">Device: HH-MGR-04</p>
+<p class="font-label-sm text-label-sm text-outline mt-1 text-[12px]">15 mins ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

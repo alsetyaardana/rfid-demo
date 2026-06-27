@@ -1,0 +1,17 @@
+web/.next/
+web/node_modules/
+web/dist/
+web/coverage/
+web/*.log
+web/prisma/dev.db
+web/prisma/dev.db-journal
+web/.env.local
+web/.env
+web/temp/
+android/build/
+android/.gradle/
+android/local.properties
+android/temp/
+
+API_Ver20251103.rar
+Demo-uhf_as.rar

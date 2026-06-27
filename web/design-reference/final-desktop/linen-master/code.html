@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Linen Master - Hotel RFID Operations</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from design system -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bcc7de",
+                        "tertiary": "#924628",
+                        "primary-fixed": "#89f5e7",
+                        "surface-variant": "#dee4e1",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-surface": "#171d1c",
+                        "surface-container": "#eaefed",
+                        "inverse-surface": "#2c3130",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary": "#00685f",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-surface-variant": "#3d4947",
+                        "outline-variant": "#bcc9c6",
+                        "tertiary-container": "#b05e3d",
+                        "surface-dim": "#d6dbd9",
+                        "surface-container-low": "#f0f5f2",
+                        "on-primary-fixed": "#00201d",
+                        "on-error-container": "#93000a",
+                        "surface": "#f5faf8",
+                        "background": "#f5faf8",
+                        "on-primary-container": "#f4fffc",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#edf2f0",
+                        "on-secondary-fixed": "#111c2d",
+                        "primary-container": "#008378",
+                        "on-background": "#171d1c",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "on-secondary-container": "#586377",
+                        "surface-container-high": "#e4e9e7",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "tertiary-fixed": "#ffdbce",
+                        "secondary-container": "#d5e0f8",
+                        "inverse-primary": "#6bd8cb",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#006a61",
+                        "surface-container-highest": "#dee4e1",
+                        "outline": "#6d7a77",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#545f73",
+                        "surface-bright": "#f5faf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "header_height": "72px",
+                        "sidebar_width": "260px",
+                        "container_max": "1440px",
+                        "gutter": "24px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "code-data": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "code-data": ["16px", { "lineHeight": "24px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden">
+<!-- App Container -->
+<div class="min-h-screen flex w-full">
+<!-- SideNavBar -->
+<nav aria-label="Sidebar" class="hidden md:flex flex-col h-full w-[260px] py-margin bg-on-secondary-fixed dark:bg-on-secondary-fixed w-[260px] h-full fixed left-0 top-0 z-20">
+<!-- Brand -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary font-bold">
+<span class="material-symbols-outlined" data-icon="hotel" data-weight="fill" style="font-variation-settings: 'FILL' 1;">hotel</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed">Hotel RFID</h1>
+<p class="font-label-sm text-label-sm text-secondary-fixed-dim">Operations Platform</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto pr-4">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="dashboard">dashboard</span>
+                            Dashboard
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="barcode_scanner">barcode_scanner</span>
+                            RFID Scan
+                        </a>
+</li>
+<!-- Active State for Linen Master -->
+<li>
+<a aria-current="page" class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm bg-primary-container text-on-primary-container font-bold rounded-r-full transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2" data-weight="fill" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                            Linen Master
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="local_laundry_service">local_laundry_service</span>
+                            Laundry Batches
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="account_balance_wallet">account_balance_wallet</span>
+                            Reconciliation
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="sensors">sensors</span>
+                            Device Activity
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 font-label-sm text-label-sm text-secondary-fixed-dim hover:text-white hover:bg-on-secondary-fixed-variant transition-colors duration-200 rounded-r-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors duration-200" data-icon="history">history</span>
+                            Transaction History
+                        </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area (Offset by sidebar width) -->
+<main class="flex-1 flex flex-col min-w-0 md:ml-sidebar_width">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-gutter h-[72px] bg-surface dark:bg-surface-container border-b border-outline-variant z-10 sticky top-0 w-full transition-all duration-150">
+<!-- Search Bar -->
+<div class="flex-1 max-w-md relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</div>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-code-data text-code-data text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:font-body-md placeholder:text-on-surface-variant/70" placeholder="Search Linen IDs, Locations..." type="text"/>
+</div>
+<!-- Actions & Profile -->
+<div class="flex items-center gap-4 ml-4">
+<button aria-label="Notifications" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<!-- Notification Badge -->
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button aria-label="Settings" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-px h-8 bg-outline-variant mx-2"></div>
+<button class="flex items-center gap-2 hover:bg-surface-container-low p-1.5 rounded-lg transition-colors">
+<img alt="Hotel Ops Admin Avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A small, professional headshot photo of an administrator, wearing a dark suit against a neutral bright background. High quality, well lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOC2SdSVaqpyvx2aZFfEprK1-P-MXjSpoayoyLWyT9B7Qa-aZOblZheEqu0vFepuWVk-A9aemc6SNDRVLxQ5malxxCc8epUZiJaiJonx5SjxCnL-FEn_VGkgaGG3XDPWL6QSGwb_V_Bjkjm7-PPX_oO_4aqKOP2PkrbcXCmNu_UXklTiHpWgHv4bEUj9jpTdJ0eni928mcLGVhPcSE7DBoV5OUCnOvTEp8NHNMBGnWgC6fIor3GT89"/>
+<div class="hidden lg:block text-left">
+<p class="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">Admin User</p>
+<p class="text-xs text-on-surface-variant">Ops Manager</p>
+</div>
+</button>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<div class="p-margin mx-auto w-full max-w-container_max">
+<!-- Page Header & Primary Action -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Linen Master</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and track all registered hotel linens via RFID.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border-2 border-primary text-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                            Filter
+                        </button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm font-semibold hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add" data-weight="fill" style="font-variation-settings: 'FILL' 1;">add</span>
+                            Register Linen
+                        </button>
+</div>
+</div>
+<!-- Stats Overview Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-8">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:border-primary transition-colors duration-200">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</div>
+<span class="font-code-data text-code-data text-on-surface-variant">Total</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">12,450</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Registered Linens</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:border-primary transition-colors duration-200">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary-container rounded-lg text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="local_laundry_service">local_laundry_service</span>
+</div>
+<span class="font-code-data text-code-data text-on-surface-variant">In Cycle</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">3,892</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Currently in Laundry</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:border-primary transition-colors duration-200">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-error-container rounded-lg text-on-error-container">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<span class="font-code-data text-code-data text-on-surface-variant">Missing</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">45</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Not scanned &gt; 7 days</p>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:border-primary transition-colors duration-200">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary-container rounded-lg text-on-tertiary-container">
+<span class="material-symbols-outlined" data-icon="autorenew">autorenew</span>
+</div>
+<span class="font-code-data text-code-data text-on-surface-variant">Lifecycle</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">1,204</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Nearing retirement limit</p>
+</div>
+</div>
+<!-- Linen Master Data Table Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
+<!-- Table Toolbar -->
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+<h3 class="font-headline-md text-headline-md text-on-surface">Linen Inventory</h3>
+<div class="flex gap-2">
+<!-- View Toggle -->
+<div class="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant">
+<button aria-label="Table View" class="p-1.5 bg-surface rounded shadow-sm text-on-surface">
+<span class="material-symbols-outlined text-[20px]" data-icon="table_rows">table_rows</span>
+</button>
+<button aria-label="Grid View" class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="grid_view">grid_view</span>
+</button>
+</div>
+<button aria-label="Export Data" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<!-- Table Wrapper (Scrollable) -->
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low sticky top-0 z-10 shadow-[0_1px_0_0_#bcc9c6]">
+<tr>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Linen ID</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Linen Type</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Current Location</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Current Status</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Laundry Cycle</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold">Last Scan</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-6 py-4 font-code-data text-code-data">
+<span class="bg-surface-dim px-2 py-1 rounded text-on-surface">EPC-3039-44FA</span>
+</td>
+<td class="px-6 py-4">King Sheet - Premium</td>
+<td class="px-6 py-4">Floor 4 - Housekeeping Cart B</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Clean
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-code-data">42/100</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 42%;"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">2 mins ago</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="More options" class="p-1 text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-[#F8F7F4] hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-6 py-4 font-code-data text-code-data">
+<span class="bg-surface-dim px-2 py-1 rounded text-on-surface">EPC-3039-44FB</span>
+</td>
+<td class="px-6 py-4">Bath Towel - Standard</td>
+<td class="px-6 py-4">Laundry Facility - Receiving</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-tertiary/10 text-tertiary border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> In Laundry
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-code-data">88/100</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-tertiary" style="width: 88%;"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">1 hr ago</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="More options" class="p-1 text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer border-l-2 border-l-error">
+<td class="px-6 py-4 font-code-data text-code-data">
+<span class="bg-surface-dim px-2 py-1 rounded text-on-surface">EPC-9102-11XX</span>
+</td>
+<td class="px-6 py-4">Pool Towel - Striped</td>
+<td class="px-6 py-4 text-error font-medium">Unknown</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-error/10 text-error border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Missing
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-code-data">12/100</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 12%;"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">8 days ago</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="More options" class="p-1 text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-[#F8F7F4] hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-6 py-4 font-code-data text-code-data">
+<span class="bg-surface-dim px-2 py-1 rounded text-on-surface">EPC-3039-44FC</span>
+</td>
+<td class="px-6 py-4">King Sheet - Premium</td>
+<td class="px-6 py-4">Room 412</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-outline/10 text-outline border border-outline/20">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span> In Use
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-code-data">43/100</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 43%;"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Yesterday</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="More options" class="p-1 text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer border-l-2 border-l-tertiary">
+<td class="px-6 py-4 font-code-data text-code-data">
+<span class="bg-surface-dim px-2 py-1 rounded text-on-surface">EPC-5501-88ZZ</span>
+</td>
+<td class="px-6 py-4">Bath Mat - Standard</td>
+<td class="px-6 py-4">Laundry Facility - Dispatch</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-tertiary/10 text-tertiary border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Retire Pending
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-code-data text-tertiary font-bold">100/100</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-tertiary" style="width: 100%;"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">3 hrs ago</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="More options" class="p-1 text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
+<p class="text-sm text-on-surface-variant">Showing <span class="font-medium text-on-surface">1</span> to <span class="font-medium text-on-surface">5</span> of <span class="font-medium text-on-surface">12,450</span> results</p>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50 disabled:cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1.5 rounded border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
