@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { OperationMode, ReaderType, TransactionType } from "@/lib/domain/enums";
+import { OperationMode, ReaderType, TransactionType, ValidationStatus } from "@/lib/domain/enums";
 import { getDb } from "@/lib/db";
 import { buildDemoReads, processRfidReadSession } from "@/lib/services/rfid-processing";
-import { resetSimulationDatabase, generateSimulationData, clearSimulationData } from "@/lib/services/simulation";
+import { resetSimulationDatabase, generateSimulationData, clearSimulationData, checkRecordLimits } from "@/lib/services/simulation";
 import { LaundryBatchStatus, LinenStatus } from "@/lib/domain/enums";
+import { normalizeEpc } from "@/lib/domain/epc";
+import { headers } from "next/headers";
 
 const revalidateAll = () => {
   ["/", "/rfid-scan", "/linen-master", "/laundry-batches", "/reconciliation", "/device-activity", "/transaction-history", "/asset-management"].forEach((path) => revalidatePath(path));
@@ -188,4 +190,74 @@ export async function simulateFixedReaderAction() {
   });
   revalidateAll();
   return result;
+}
+
+export async function registerPhysicalEpcAction(epc: string, linenCode: string, linenType: string) {
+  const mode = headers().get("x-demo-mode") || "SIMULATION";
+  if (mode !== "HARDWARE") {
+    throw new Error("Physical EPC registration is only allowed in Hardware mode.");
+  }
+
+  const prisma = getDb("HARDWARE");
+
+  const normalizedEpc = normalizeEpc(epc);
+  if (!normalizedEpc) {
+    throw new Error("Invalid EPC format.");
+  }
+  
+  const trimmedLinenCode = linenCode.trim();
+  if (!trimmedLinenCode) {
+    throw new Error("Linen Code is required.");
+  }
+  if (!linenType.trim()) {
+    throw new Error("Linen Type is required.");
+  }
+
+  // Enforce limit using the shared logic logic (but pointed at hardware db)
+  await checkRecordLimits(prisma, 'linen', 1);
+
+  // Uniqueness check
+  const existingEpc = await prisma.linen.findUnique({ where: { epc: normalizedEpc } });
+  if (existingEpc) {
+    throw new Error("This EPC is already registered.");
+  }
+
+  const existingCode = await prisma.linen.findUnique({ where: { linenCode: trimmedLinenCode } });
+  if (existingCode) {
+    throw new Error("This Linen Code is already in use.");
+  }
+
+  // Get Linen Room location
+  const location = await prisma.location.findUnique({ where: { code: "LINEN-RM" } });
+  if (!location) {
+    throw new Error("Base infrastructure missing. Cannot find LINEN-RM.");
+  }
+
+  // Create
+  const linen = await prisma.linen.create({
+    data: {
+      epc: normalizedEpc,
+      linenCode: trimmedLinenCode,
+      linenType: linenType.trim(),
+      currentStatus: LinenStatus.AVAILABLE,
+      currentLocationId: location.id,
+      laundryCycleCount: 0
+    }
+  });
+
+  revalidateAll();
+  return linen;
+}
+
+export async function dismissUnknownEpcAction(epc: string) {
+  // To dismiss, we can simply delete the specific RFIDRead records that have this EPC and are UNKNOWN_EPC
+  // in the current mode (HARDWARE) so they disappear from the UI.
+  const prisma = getDb("HARDWARE");
+  await prisma.rFIDRead.deleteMany({
+    where: {
+      epc: epc,
+      validationStatus: ValidationStatus.UNKNOWN_EPC
+    }
+  });
+  revalidateAll();
 }

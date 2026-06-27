@@ -120,3 +120,41 @@ export async function getSentReturnSummary(batchId: string) {
   });
   return { sent, returned, outstanding: Math.max(sent - returned, 0) };
 }
+
+export async function getRecentUnknownEpcs() {
+  const prisma = getDb();
+  // Fetch recent unknown reads that have not been registered yet.
+  const unknownReads = await prisma.rFIDRead.findMany({
+    where: { validationStatus: ValidationStatus.UNKNOWN_EPC },
+    include: { session: true },
+    orderBy: { session: { createdAt: "desc" } },
+    take: 50 // reasonable limit for recent unknowns
+  });
+
+  // Filter out any EPCs that are already registered in the Linen table
+  const epcs = [...new Set(unknownReads.map(r => r.epc))];
+  const registered = await prisma.linen.findMany({
+    where: { epc: { in: epcs } },
+    select: { epc: true }
+  });
+  
+  const registeredSet = new Set(registered.map(r => r.epc));
+  
+  const uniqueUnknowns = [];
+  const seen = new Set();
+  
+  for (const read of unknownReads) {
+    if (!registeredSet.has(read.epc) && !seen.has(read.epc)) {
+      seen.add(read.epc);
+      uniqueUnknowns.push({
+        epc: read.epc,
+        readerId: read.session.readerId,
+        rssi: read.rssi,
+        timestamp: read.session.createdAt,
+        sessionId: read.sessionId
+      });
+    }
+  }
+
+  return uniqueUnknowns;
+}

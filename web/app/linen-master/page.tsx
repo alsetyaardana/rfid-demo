@@ -1,8 +1,13 @@
 import { DataTable, Metric, SectionHead } from "@/components/ui";
 import { enumText } from "@/components/ui";
-import { getLinenMasterData } from "@/lib/services/queries";
+import { getLinenMasterData, getRecentUnknownEpcs } from "@/lib/services/queries";
+import { headers } from "next/headers";
+import { HardwareEpcRegistrationPanel } from "@/components/mode-panels/LinenMasterPanels";
 
 export default async function LinenMasterPage() {
+  const mode = headers().get("x-demo-mode") || "SIMULATION";
+  const isHardware = mode === "HARDWARE";
+
   const linens = await getLinenMasterData();
   const available = linens.filter((linen) => linen.currentStatus === "AVAILABLE").length;
   const inLaundry = linens.filter((linen) => linen.currentStatus === "IN_LAUNDRY").length;
@@ -12,6 +17,15 @@ export default async function LinenMasterPage() {
   return (
     <div className="screen">
       <SectionHead title="Linen Master" body="Registered linen inventory with unique EPC values, current status, location, and laundry cycle counts." />
+      
+      {isHardware && (
+        <HardwareEpcRegistrationPanel 
+          recentUnknowns={await getRecentUnknownEpcs()} 
+          totalLinen={linens.length} 
+          limit={100} 
+        />
+      )}
+
       <section className="grid-4">
         <Metric label="Available" value={available} note="Ready for operations" tone="teal" />
         <Metric label="In Laundry" value={inLaundry} note="Updated by confirmed sends" tone="gold" />
