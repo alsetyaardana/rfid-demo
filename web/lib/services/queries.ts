@@ -30,6 +30,11 @@ export async function getLinenMasterData() {
   });
 }
 
+export async function getLinenCount(mode?: string) {
+  const prisma = getDb(mode);
+  return prisma.linen.count();
+}
+
 export async function getLaundryBatchData() {
   const prisma = getDb();
   return prisma.laundryBatch.findMany({
@@ -121,8 +126,8 @@ export async function getSentReturnSummary(batchId: string) {
   return { sent, returned, outstanding: Math.max(sent - returned, 0) };
 }
 
-export async function getRecentUnknownEpcs() {
-  const prisma = getDb();
+export async function getRecentUnknownEpcs(mode?: string) {
+  const prisma = getDb(mode);
   // Fetch recent unknown reads that have not been registered yet.
   const unknownReads = await prisma.rFIDRead.findMany({
     where: { validationStatus: ValidationStatus.UNKNOWN_EPC },

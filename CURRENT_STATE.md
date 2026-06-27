@@ -12,29 +12,33 @@ This document serves as the single source of truth for the project's progress an
 * **Mode-Aware UI**: Operational UI cleanly distinguishes between browser simulation workflows and hardware monitoring workflows.
 * **Simulation Data Management**: Robust, dynamic data generation and reset logic (capped safely at 100 records).
 * **Quick Physical EPC Registration**: Hardware Linen Master panel safely captures `UNKNOWN_EPC`s and commits them to `hardware.db`.
+* **Web-First Physical EPC Registration Polling**: Hardware Linen Master polls for physical `UNKNOWN_EPC`s every 2.5 seconds and updates the registration queue without a manual browser refresh.
+* **C5 Physical Upload Validation**: Repository-built APK installed on Chainway C5 and confirmed to upload a fresh `STOCK_COUNT` session to `hardware.db`; the fresh `UNKNOWN_EPC` appeared in the Web registration queue.
 * **Branding**: Full transition to "Porta Nusa Hotel" and "Porta Nusa Operator" branding.
 
 ## Current Architecture
 
-* **Simulation Browser** → sends `X-Demo-Mode: SIMULATION` via middleware → writes to `simulation.db`
-* **Hardware Browser** → sends `X-Demo-Mode: HARDWARE` via middleware → reads/writes to `hardware.db`
-* **Chainway C5 Android** → always injects `X-Demo-Mode: HARDWARE` headers → reads/writes to `hardware.db`
+* **Simulation Browser** -> sends `X-Demo-Mode: SIMULATION` via middleware -> writes to `simulation.db`
+* **Hardware Browser** -> sends `X-Demo-Mode: HARDWARE` via middleware -> reads/writes to `hardware.db`
+* **Chainway C5 Android** -> always injects `X-Demo-Mode: HARDWARE` headers -> reads/writes to `hardware.db`
 
 *Note: There is absolutely no shared state between the two SQLite databases. `hardware.db` starts empty and strictly limits linen creation to 100 items.*
 
-## Next Approved Flow: Web-First Physical EPC Registration
+## Completed Flow: Web-First Physical EPC Registration
 
-To streamline registration without over-complicating the Android app, the next milestone focuses on a **refresh-free Web UI**.
+Registration remains Web-first while the Android app only uploads RFID sessions.
 
 **Flow:**
 1. C5 scans tag.
 2. Android uploads RFID session payload.
 3. Server stores `UNKNOWN_EPC` result in `hardware.db`.
-4. Hardware Linen Master UI polls (every 2–3s) for recent unknown EPCs.
+4. Hardware Linen Master UI polls every 2.5 seconds for recent unknown EPCs.
 5. Unknown EPC automatically appears in the Web registration queue.
 6. Operator registers Linen Code and Linen Type on the Web UI.
 7. Server validates and saves to `hardware.db`.
 8. Next hardware scan recognizes the EPC immediately.
+
+**Latest physical validation:** A repository-built APK was installed on Chainway C5 `636e8268`. A fresh `STOCK_COUNT` upload for EPC `494E562D4153542D30303031` reached `http://10.10.101.45:3000/api/rfid/read-sessions`, persisted to the active `web/prisma/hardware.db` with `validationStatus=UNKNOWN_EPC`, and appeared in `GET /api/hardware/unknown-epcs`.
 
 ## Later Milestones
 
