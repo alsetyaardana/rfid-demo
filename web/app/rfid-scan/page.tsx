@@ -2,8 +2,13 @@ import { Badge, DataTable, SectionHead } from "@/components/ui";
 import { ScenarioButtons } from "@/components/demo-actions";
 import { getRfidScanData } from "@/lib/services/queries";
 import { enumText } from "@/components/ui";
+import { headers } from "next/headers";
+import { HardwareActivityPanel, SimulationScanPanel } from "@/components/mode-panels/RfidScanPanels";
 
 export default async function RfidScanPage() {
+  const mode = headers().get("x-demo-mode") || "SIMULATION";
+  const isHardware = mode === "HARDWARE";
+
   const data = await getRfidScanData();
   const latest = data.latestSessions[0];
   const rawCount = latest?.rawReadCount ?? 0;
@@ -16,36 +21,16 @@ export default async function RfidScanPage() {
   return (
     <div className="screen">
       <SectionHead
-        title="RFID Scan"
-        body="Website simulator for handheld operation and fixed reader emulator. Both flows use the same server-side processing logic."
-        action={<ScenarioButtons />}
+        title={isHardware ? "RFID Hardware Activity" : "RFID Scan Simulation"}
+        body={isHardware ? "Monitoring live hardware sessions from the Android C5." : "Website simulator for handheld operation and fixed reader emulator. Both flows use the same server-side processing logic."}
+        action={!isHardware ? <ScenarioButtons /> : undefined}
       />
 
-      <section className="grid-3">
-        <article className="card span-2">
-          <div className="card-title"><h3>Simulation Controls</h3><Badge>{data.batch?.batchCode ?? "No Batch"}</Badge></div>
-          <div className="segmented" aria-label="Simulation source">
-            <span className="active">Website Simulation</span>
-            <span>Live Device</span>
-          </div>
-          <div style={{ height: 12 }} />
-          <div className="segmented" aria-label="Operation mode">
-            <span className="active">Handheld Operation</span>
-            <span>Fixed Reader Emulator</span>
-          </div>
-          <div className="form-grid" style={{ marginTop: 16 }}>
-            <div className="field"><label>Activity</label><select defaultValue="send"><option value="send">Send to Laundry</option><option value="return">Return from Laundry</option></select></div>
-            <div className="field"><label>Location</label><select defaultValue="LDY-GATE"><option>Laundry Dispatch Gate</option><option>Laundry Return Desk</option></select></div>
-            <div className="field"><label>Laundry Batch</label><input className="mono" readOnly value={data.batch?.batchCode ?? ""} /></div>
-            <div className="field"><label>Reader ID</label><input className="mono" readOnly value="HH-MGR-04 / FX-LDY-02" /></div>
-          </div>
-        </article>
-        <article className="card">
-          <div className="card-title"><h3>Fixed Reader Emulator</h3><Badge>Auto Upload Active</Badge></div>
-          <div className="countdown">30s</div>
-          <p className="muted">Reader ID FX-LDY-02 monitors Laundry Dispatch Gate and stores sessions through the shared processing layer.</p>
-        </article>
-      </section>
+      {isHardware ? (
+        <HardwareActivityPanel latestSession={latest} />
+      ) : (
+        <SimulationScanPanel batchCode={data.batch?.batchCode ?? "No Batch"} />
+      )}
 
       <section className="grid-4">
         <article className="card metric teal"><label>Raw Reads</label><strong>{rawCount}</strong><small>Includes duplicates</small></article>

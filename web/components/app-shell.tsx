@@ -105,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </label>
             <div className="operator-chip">
               <span className="avatar">PN</span>
-              <span>Porta Nusa Demo</span>
+              <span>Porta Nusa Operator</span>
             </div>
           </div>
         </header>

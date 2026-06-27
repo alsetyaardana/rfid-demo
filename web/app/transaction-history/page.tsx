@@ -1,8 +1,12 @@
 import { DataTable, Metric, SectionHead } from "@/components/ui";
 import { enumText } from "@/components/ui";
 import { getTransactionHistoryData } from "@/lib/services/queries";
+import { headers } from "next/headers";
 
 export default async function TransactionHistoryPage() {
+  const mode = headers().get("x-demo-mode") || "SIMULATION";
+  const isHardware = mode === "HARDWARE";
+
   const transactions = await getTransactionHistoryData();
   const accepted = transactions.reduce((sum, transaction) => sum + transaction.items.filter((item) => item.validationStatus === "ACCEPTED").length, 0);
   const rejected = transactions.reduce((sum, transaction) => sum + transaction.items.filter((item) => item.validationStatus !== "ACCEPTED").length, 0);
@@ -15,23 +19,30 @@ export default async function TransactionHistoryPage() {
         <Metric label="Accepted Items" value={accepted} note="Applied to business workflow" tone="teal" />
         <Metric label="Rejected Items" value={rejected} note="Stored for audit visibility" tone={rejected > 0 ? "red" : "teal"} />
       </section>
-      <section className="card tight">
-        <DataTable
-          headers={["Transaction ID", "Activity", "Batch", "Reader", "Operation Mode", "Accepted", "Rejected", "Timestamp", "Status"]}
-          badgeColumns={[4, 8]}
-          rows={transactions.map((transaction) => [
-            transaction.transactionCode,
-            enumText(transaction.transactionType),
-            transaction.laundryBatch?.batchCode ?? "-",
-            transaction.readerId,
-            enumText(transaction.operationMode),
-            transaction.items.filter((item) => item.validationStatus === "ACCEPTED").length,
-            transaction.items.filter((item) => item.validationStatus !== "ACCEPTED").length,
-            transaction.createdAt.toLocaleString(),
-            "Confirmed"
-          ])}
-        />
-      </section>
+      {transactions.length === 0 ? (
+        <section className="empty-state">
+          <h3>No transactions found</h3>
+          <p>Scan linen items to create confirmed transaction records.</p>
+        </section>
+      ) : (
+        <section className="card tight">
+          <DataTable
+            headers={["Transaction ID", "Activity", "Batch", "Reader", "Operation Mode", "Accepted", "Rejected", "Timestamp", "Status"]}
+            badgeColumns={[4, 8]}
+            rows={transactions.map((transaction) => [
+              transaction.transactionCode,
+              enumText(transaction.transactionType),
+              transaction.laundryBatch?.batchCode ?? "-",
+              transaction.readerId,
+              enumText(transaction.operationMode),
+              transaction.items.filter((item) => item.validationStatus === "ACCEPTED").length,
+              transaction.items.filter((item) => item.validationStatus !== "ACCEPTED").length,
+              transaction.createdAt.toLocaleString(),
+              "Confirmed"
+            ])}
+          />
+        </section>
+      )}
     </div>
   );
 }

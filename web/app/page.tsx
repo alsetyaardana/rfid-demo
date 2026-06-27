@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { demoBatchCode } from "@/lib/domain/demo-data";
 import { enumText, Badge, DataTable, Metric, SectionHead } from "@/components/ui";
-import { ResetDemoButton, ScenarioButtons } from "@/components/demo-actions";
+import { ResetDemoButton } from "@/components/demo-actions";
 import { getDashboardData, getTransactionHistoryData } from "@/lib/services/queries";
+import { headers } from "next/headers";
+import { HardwareDashboardPanel, SimulationDashboardPanel } from "@/components/mode-panels/DashboardPanels";
 
 export default async function DashboardPage() {
+  const mode = headers().get("x-demo-mode") || "SIMULATION";
+  const isHardware = mode === "HARDWARE";
+
   const [dashboard, transactions] = await Promise.all([getDashboardData(), getTransactionHistoryData()]);
   const available = dashboard.linenCounts.AVAILABLE ?? 0;
   const inLaundry = dashboard.linenCounts.IN_LAUNDRY ?? 0;
@@ -15,16 +20,18 @@ export default async function DashboardPage() {
       <SectionHead
         title="Operations Dashboard"
         body="Real-time view of the active Porta Nusa Hotel linen RFID demo, calculated from persisted SQLite data."
-        action={<ResetDemoButton />}
+        action={!isHardware ? <ResetDemoButton /> : undefined}
       />
 
-      <section className="demo-band">
-        <div>
-          <h3>Tracking Laundry Batch <span className="mono">{demoBatchCode}</span></h3>
-          <p>Workflow: RFID Scan to Laundry Transaction to Return to Reconciliation to Outstanding Linen.</p>
-        </div>
-        <Badge>{outstanding} Outstanding</Badge>
-      </section>
+      {!isHardware && (
+        <section className="demo-band">
+          <div>
+            <h3>Tracking Laundry Batch <span className="mono">{demoBatchCode}</span></h3>
+            <p>Workflow: RFID Scan to Laundry Transaction to Return to Reconciliation to Outstanding Linen.</p>
+          </div>
+          <Badge>{outstanding} Outstanding</Badge>
+        </section>
+      )}
 
       <section className="grid-4">
         <Metric label="Available" value={available} note="Persisted linen currently ready" tone="teal" />
@@ -33,24 +40,15 @@ export default async function DashboardPage() {
         <Metric label="Outstanding" value={outstanding} note="Sent minus valid returned" tone={outstanding > 0 ? "red" : "teal"} />
       </section>
 
-      <section className="grid-3">
-        <article className="card span-2">
-          <div className="card-title"><h3>Run Demo Scenario</h3><Badge>Website Simulation</Badge></div>
-          <p className="muted">Use these controls to execute the approved 8 sent, 7 returned, 1 outstanding storyline through the server-side processing layer.</p>
-          <div style={{ marginTop: 16 }}><ScenarioButtons /></div>
-        </article>
-        <article className="card">
-          <div className="card-title"><h3>Operational Insight</h3><Badge>Derived</Badge></div>
-          <p>
-            {outstanding > 0
-              ? `One item remains outstanding for ${demoBatchCode}. Open Reconciliation to inspect the exact linen ID and EPC.`
-              : "No outstanding linen has been detected yet for the active demo batch."}
-          </p>
-          <div className="button-row" style={{ marginTop: 16 }}>
-            <Link className="btn secondary" href="/reconciliation">Open Reconciliation</Link>
-          </div>
-        </article>
-      </section>
+      {isHardware ? (
+        <HardwareDashboardPanel 
+          transactionCount={dashboard.transactionCount}
+          lastTransaction={transactions[0]}
+          hasActivity={transactions.length > 0 || dashboard.transactionCount > 0} 
+        />
+      ) : (
+        <SimulationDashboardPanel outstanding={outstanding} />
+      )}
 
       <section className="card tight">
         <DataTable

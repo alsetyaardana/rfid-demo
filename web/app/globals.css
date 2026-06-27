@@ -709,13 +709,14 @@ tbody tr:nth-child(even) {
 .mode-actions {
   padding: 16px;
   margin: 16px;
-  background: var(--surface-soft);
+  background: rgb(255 255 255 / 6%);
+  border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 8px;
 }
 .mode-actions h4 {
   font-size: 0.85rem;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgb(255 255 255 / 66%);
   margin-bottom: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -727,16 +728,37 @@ tbody tr:nth-child(even) {
 }
 .switch-mode-btn {
   background: none;
-  border: 1px solid var(--line);
+  border: 1px solid rgb(255 255 255 / 22%);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: rgb(255 255 255 / 76%);
   cursor: pointer;
   margin-top: 4px;
 }
 .switch-mode-btn:hover {
-  background: var(--line);
-  color: var(--navy);
+  background: rgb(255 255 255 / 9%);
+  color: #fff;
 }
-
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px;
+  text-align: center;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+.empty-state h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text);
+}
+.empty-state p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 400px;
+}
