@@ -1,39 +1,70 @@
 # Hotel RFID Operations Platform Web
 
-This folder contains the Website-only MVP and unified RFID HTTP API.
+This folder contains the Next.js application, the unified RFID HTTP API, and the dual Prisma/SQLite data layer.
 
 ## Source Of Truth
 
 - Visual direction: `design-reference/DESIGN.md`
 - Functional UI requirements: `docs/UI_IMPLEMENTATION_NOTES.md`
 - API contract: `docs/RFID_API.md`
-- Static prototype snapshot: `prototype/static-demo/`
+
+## Architecture: Dual Databases
+
+The Web application securely manages two isolated databases:
+- `simulation.db`: Contains generated mock data for browser-only demonstrations.
+- `hardware.db`: Contains actual data from physical hardware scans.
+
+**Important Data-Safety Rules**:
+- The application shares a single Prisma codebase, but strict middleware isolates the two environments.
+- Do NOT mix data. Do not manually transfer files between `hardware.db` and `simulation.db`.
+- Simulation UI actions (such as generating data or running scenarios) operate exclusively on `simulation.db`.
+
+### Mode Routing (X-Demo-Mode)
+
+The active mode is determined entirely by the user's browser selection.
+1. The user selects a mode on the root Welcome screen.
+2. The selection is stored in `localStorage` and a secure cookie.
+3. Next.js `middleware.ts` intercepts all requests and attaches the `X-Demo-Mode` header (either `SIMULATION` or `HARDWARE`).
+4. If missing, the fallback mode is safely defaulted to `SIMULATION`.
+5. `lib/db.ts` reads the `X-Demo-Mode` header to dynamically serve the correct Prisma client (`prismaSimulation` vs `prismaHardware`).
+
+## Web Features
+
+- **Mode-Aware Operational UI**: Routes cleanly differentiate between Hardware and Simulation context. Hardware Mode hides simulator controls and instead displays dynamic panels featuring actual Chainway API Status and recent activity.
+- **Simulation Data Management**: Robust, explicit data management forms allow users to generate, clear, or reset simulation data (up to 100 records) without automated seeding.
+- **Hardware EPC Registration Panel**: A specialized panel in `/linen-master` for Hardware Mode that surfaces recently scanned unknown physical EPCs, allowing operators to quickly register them into `hardware.db`.
 
 ## Commands
 
 Run from this `web/` folder:
 
 ```powershell
-npm.cmd test
+# Install dependencies
+npm.cmd install
+
+# Build and Test
 npm.cmd run build
+npm.cmd test
+
+# Run database migrations for both simulation.db and hardware.db
+npm.cmd run prisma:migrate
+
+# Reset simulation.db data
 npm.cmd run demo:reset
-npm.cmd run demo:scenario
-npm.cmd run mock:rfid -- fixed-send-8
 ```
 
 Local server:
 
 ```powershell
-npm.cmd run build
-npm.cmd start
+npm.cmd run dev
 ```
 
-## Included Routes
+## Main Routes
 
-- `/`
-- `/rfid-scan`
-- `/linen-master`
-- `/laundry-batches`
+- `/` - Mode-aware Dashboard
+- `/rfid-scan` - Device Activity and simulated scans
+- `/linen-master` - Read-only inventory list and Hardware EPC Registration form
+- `/laundry-batches` - Mode-aware operational lists
 - `/reconciliation`
 - `/device-activity`
 - `/transaction-history`

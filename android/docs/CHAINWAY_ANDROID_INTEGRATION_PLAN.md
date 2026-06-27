@@ -1,6 +1,7 @@
 # Chainway Android Integration Plan
 
-This plan starts only after the SDK audit milestone is accepted. Do not begin Android implementation until explicitly requested.
+**Status: COMPLETED**
+This original integration plan has been fully realized. The Android application `chainway-edge-app` was successfully built and integrated according to this architecture.
 
 ## Integration Principle
 
@@ -177,18 +178,19 @@ Acceptance:
 - Session uploads automatically after timer/batch window.
 - No manual confirmation as primary flow.
 
-## Open Technical Questions For Physical C5 Testing
+## Technical Resolutions
 
-- Which SDK class is correct for the specific C5 model and UHF module: `RFIDWithUHFUART` is the strongest first candidate, but hardware must confirm.
-- Whether trigger key is received through SDK `KeyEventCallback`, Android key events, or a vendor-specific service.
-- Valid power range for `setPower(int)`.
-- RSSI value format on C5 internal UHF.
-- Whether callbacks or buffer polling are more reliable during continuous inventory.
-- Whether the device requires vendor firmware/services beyond the AAR.
+- The exact module integrated successfully was E710 via `RFIDWithUHFUART`.
+- Trigger keys (139, 280) were successfully intercepted via standard Android `onKeyDown` without vendor services.
+- Native `IUHFInventoryCallback` was utilized successfully for deduplicated polling.
+- The `X-Demo-Mode: HARDWARE` header ensures API isolation.
+- Upcoming focus: mapping valid power ranges to Profiles (NEAR, MEDIUM, FAR).
 
-## Stop Conditions
+## Stop Conditions (Resolved)
 
-Pause Android integration if:
+The initial integration risk was resolved successfully:
+- `init()` succeeded.
+- EPCs scan stably.
 
 - `init(Context)` fails on the physical C5.
 - No EPC can be read from known tags.

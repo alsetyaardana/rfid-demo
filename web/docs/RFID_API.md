@@ -19,9 +19,15 @@ All API requests require:
 ```http
 Content-Type: application/json
 X-RFID-API-Key: local-demo-rfid-key
+X-Demo-Mode: HARDWARE
 ```
 
 The expected key is read from `RFID_API_KEY`. Do not expose this key in client-side browser JavaScript.
+
+The `X-Demo-Mode` header dictates which SQLite database receives the data:
+- `SIMULATION`: Writes to `simulation.db`. Used by web simulators.
+- `HARDWARE`: Writes to `hardware.db`. The Android Chainway C5 always injects this mode to isolate physical tags from mock data.
+If omitted, it defaults to `SIMULATION` for safety.
 
 ## Endpoints
 
@@ -70,7 +76,7 @@ Transaction types:
   "dataSource": "LIVE_DEVICE",
   "checkpoint": "LINEN_STORAGE",
   "transactionType": "SEND_TO_LAUNDRY",
-  "laundryBatchCode": "LB-DEMO-001",
+  "laundryBatchCode": "LB-HW-001",
   "operatorName": "Demo Operator",
   "startedAt": "2026-06-27T10:15:00+08:00",
   "completedAt": "2026-06-27T10:15:05+08:00",
@@ -139,7 +145,7 @@ Transaction types:
   "dataSource": "LIVE_DEVICE",
   "checkpoint": "LINEN_STORAGE",
   "transactionType": "SEND_TO_LAUNDRY",
-  "laundryBatchCode": "LB-DEMO-001",
+  "laundryBatchCode": "LB-HW-001",
   "operatorName": "Demo Operator",
   "startedAt": "2026-06-27T10:15:00+08:00",
   "completedAt": "2026-06-27T10:15:05+08:00",
@@ -161,7 +167,7 @@ Transaction types:
   "dataSource": "LIVE_DEVICE",
   "checkpoint": "LAUNDRY_DISPATCH_GATE",
   "transactionType": "SEND_TO_LAUNDRY",
-  "laundryBatchCode": "LB-DEMO-001",
+  "laundryBatchCode": "LB-HW-001",
   "startedAt": "2026-06-27T10:15:00+08:00",
   "completedAt": "2026-06-27T10:15:30+08:00",
   "tags": [
@@ -178,6 +184,7 @@ Send 8 linen:
 curl -X POST http://127.0.0.1:3000/api/rfid/read-sessions \
   -H "Content-Type: application/json" \
   -H "X-RFID-API-Key: local-demo-rfid-key" \
+  -H "X-Demo-Mode: HARDWARE" \
   -d @send-8.json
 ```
 
@@ -185,7 +192,8 @@ Fetch by client session id:
 
 ```bash
 curl http://127.0.0.1:3000/api/rfid/read-sessions/C5-HANDHELD-SEND-001 \
-  -H "X-RFID-API-Key: local-demo-rfid-key"
+  -H "X-RFID-API-Key: local-demo-rfid-key" \
+  -H "X-Demo-Mode: HARDWARE"
 ```
 
 ## Error Responses

@@ -1,43 +1,54 @@
-# RFID Demo Workspace
+# Porta Nusa Hotel RFID Linen Visibility Platform
 
-This workspace is split into separate surfaces so web/API work and Android preparation do not get mixed.
+This repository contains the dual-environment solution for the Porta Nusa Hotel RFID Linen Visibility Platform, designed to seamlessly handle both simulated web demonstration and physical hardware operations.
 
-## Folders
+## Purpose
 
-- `web/` - Next.js Website MVP, unified RFID HTTP API, Prisma/SQLite data layer, tests, demo scripts, visual references, and static prototype.
-- `android/` - Chainway C5 SDK audit, vendor AAR staging, and Android integration planning. No Android app has been created yet.
+The project provides a fully unified operational dashboard, database schema, and HTTP API for tracking linen lifecycle events (`STOCK_COUNT`, `SEND_TO_LAUNDRY`, `RETURN_FROM_LAUNDRY`) using RFID technology. It operates in two isolated modes to safely demonstrate capabilities without needing physical hardware, while also supporting an actual Chainway C5 Android integration.
 
-The original Chainway vendor archive remains unchanged at:
+## Operating Modes
 
-```text
-API_Ver20251103.rar
-```
+- **Simulation Mode**: A purely browser-based demonstration. Provides robust, dynamic tools for generating mock linen inventory and triggering lifecycle scenarios using simulated RFID readings. Data is stored strictly in `simulation.db`.
+- **Hardware Mode**: The physical integration environment. Connects directly to real Chainway C5 hardware scanning physical UHF tags. Features a strict 100-record limit and operational UI panels geared towards physical interactions. Data is stored strictly in `hardware.db`.
 
-## Web Commands
+## Repository Structure
+
+- `web/` - Next.js Website MVP, unified RFID HTTP API, Prisma/SQLite dual-client layer, tests, demo scripts, and web UI.
+- `android/` - Android application (`android/chainway-edge-app/`), Chainway SDK vendor package (E710_V7.10.1), and integration documentation.
+
+## Development Prerequisites
+
+- Node.js & npm (for the web application)
+- Android Studio / Android SDK (for the Chainway Android app)
+
+## Setup Commands
 
 Run these from `web/`:
 
 ```powershell
-cd web
-npm.cmd test
-npm.cmd run build
-npm.cmd run demo:reset
-npm.cmd run mock:rfid -- fixed-send-8
-```
+# Install dependencies
+npm.cmd install
 
-Local production server from `web/`:
+# Apply database schemas to both simulation.db and hardware.db
+npm.cmd run prisma:migrate
 
-```powershell
+# Start the local development server
+npm.cmd run dev
+
+# (Alternatively) Run a production build
 npm.cmd run build
 npm.cmd start
 ```
 
-## Android Status
+## Current Stable Status
 
-Current Android work is audit/preparation only:
+- **Web / API**: Core HTTP API and UI are stable. Dual databases are isolated. Physical Registration panel is complete.
+- **Android**: Chainway C5 SDK successfully integrated. Handheld physical scanning, real-time lists, deduplication, and HTTP uploading are stable.
+- Please refer to `CURRENT_STATE.md` for the exact completed milestones.
 
-- `android/docs/CHAINWAY_SDK_AUDIT.md`
-- `android/docs/CHAINWAY_ANDROID_INTEGRATION_PLAN.md`
-- `android/vendor/chainway-c5/README.md`
+## Known Remaining Milestones
 
-Recommended next Android task: build a blank Android app and send a dummy RFID session to the existing web API before importing the Chainway AAR.
+- Web-First Physical EPC Registration (polling UI)
+- RFID Read Range Profiles (NEAR, MEDIUM, FAR, CUSTOM)
+- Final physical laundry acceptance
+- Production deployment

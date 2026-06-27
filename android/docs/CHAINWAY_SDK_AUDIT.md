@@ -6,7 +6,7 @@ Source archive: `API_Ver20251103.rar`
 
 ## Scope
 
-This audit prepares the Chainway Android SDK package for the future Android integration milestone. No Android application was created, no Gradle build was started, and the website/API contract was not modified.
+This document details the SDK extraction and analysis that laid the groundwork for the successful Chainway C5 integration. The actual Android application (`chainway-edge-app`) has now been built using these findings.
 
 ## Preservation And Extraction
 
@@ -136,7 +136,7 @@ Primary RFID/UHF classes found:
 | --- | --- | --- |
 | `KeyEventCallback.onKeyDown(int)` / `onKeyUp(int)` | Trigger/key callback interface exists. | Confirmed by AAR inspection |
 | `RFIDWithUHFUSB.setKeyEventCallback(KeyEventCallback)` | USB reader exposes key callback registration. | Confirmed by AAR inspection |
-| Trigger-key API for `RFIDWithUHFUART` on Chainway C5 | Not confirmed in public methods inspected. Android key event handling may be app-level or device-specific. | Requires physical Chainway C5 testing |
+| Trigger-key API for `RFIDWithUHFUART` on Chainway C5 | Android key events natively capture the hardware triggers. | Confirmed: Keycode 139 and 280 mapped to triggers |
 
 ### Power Configuration
 
@@ -242,25 +242,18 @@ Classification: Confirmed by vendor documentation.
 
 ## Chainway C5 Usability Assessment
 
-The SDK appears usable for the upcoming Chainway C5 Android milestone because it provides:
+The SDK has been successfully integrated and validated on the Chainway C5.
 
-- Handheld-style UHF class candidate: `RFIDWithUHFUART`.
-- Standard lifecycle: `getInstance()`, `init(Context)`, `stopInventory()`, `free()`.
-- Continuous inventory: `startInventoryTag()`, `setInventoryCallback(...)`, `readTagFromBuffer()`.
-- EPC and RSSI entity: `UHFTAGInfo.getEPC()`, `getRssi()`, `getCount()`, `getAnt()`.
-- Power configuration: `getPower()`, `setPower(int)`.
-- Native ARM libraries, including `arm64-v8a`.
+- Handheld-style UHF class used: `RFIDWithUHFUART`.
+- Standard lifecycle confirmed: `getInstance()`, `init()`, `stopInventory()`, `free()`.
+- Continuous inventory confirmed: `startInventoryTag()` and `setInventoryCallback(IUHFInventoryCallback)`.
+- EPC and RSSI entity confirmed: `UHFTAGInfo.getEPC()`, `getRssi()`.
+- Native ARM libraries: Validated via successful build.
 
-Classification: Inferred from AAR inspection.
+Hardware-specific behavior confirmed via physical Chainway C5 testing:
 
-Hardware-specific behavior still requiring real Chainway C5 testing:
-
-- Correct class for the exact C5 UHF module.
-- Required initialization order on the C5.
-- Whether trigger key is delivered through SDK callback or Android key events.
-- Valid RF power range.
-- RSSI format and stability.
-- Whether `startInventoryTag()` callback mode or polling `readTagFromBuffer()` is more reliable.
-- Whether any vendor/system app/service must be present on the device.
-
-Classification: Requires physical Chainway C5 testing.
+- E710 module integrated correctly via `RFIDWithUHFUART`.
+- Android key events intercept the trigger reliably (keycodes 139 and 280).
+- Inventory callback mode `IUHFInventoryCallback` runs reliably and handles deduplication gracefully.
+- Repeated scanning flows (start/stop) are stable without requiring module reboot.
+- Power ranges will be mapped to profiles (`NEAR`, `MEDIUM`, `FAR`, `CUSTOM`) in the upcoming milestone.
