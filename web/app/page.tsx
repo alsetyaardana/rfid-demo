@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { demoBatchCode } from "@/lib/domain/demo-data";
 import { enumText, Badge, DataTable, Metric, SectionHead } from "@/components/ui";
 import { ResetDemoButton } from "@/components/demo-actions";
 import { getDashboardData, getTransactionHistoryData } from "@/lib/services/queries";
+import { getSimulationMetrics } from "@/lib/services/simulation";
+import { getDb } from "@/lib/db";
 import { headers } from "next/headers";
 import { HardwareDashboardPanel, SimulationDashboardPanel } from "@/components/mode-panels/DashboardPanels";
 
@@ -14,6 +15,8 @@ export default async function DashboardPage() {
   const available = dashboard.linenCounts.AVAILABLE ?? 0;
   const inLaundry = dashboard.linenCounts.IN_LAUNDRY ?? 0;
   const outstanding = dashboard.reconciliation.outstandingCount;
+  
+  const simulationMetrics = !isHardware ? await getSimulationMetrics(getDb("SIMULATION")) : null;
 
   return (
     <div className="screen">
@@ -26,8 +29,8 @@ export default async function DashboardPage() {
       {!isHardware && (
         <section className="demo-band">
           <div>
-            <h3>Tracking Laundry Batch <span className="mono">{demoBatchCode}</span></h3>
-            <p>Workflow: RFID Scan to Laundry Transaction to Return to Reconciliation to Outstanding Linen.</p>
+            <h3>Simulation Data Management</h3>
+            <p>Generate isolated operational records to evaluate workflows without physical RFID hardware.</p>
           </div>
           <Badge>{outstanding} Outstanding</Badge>
         </section>
@@ -47,7 +50,7 @@ export default async function DashboardPage() {
           hasActivity={transactions.length > 0 || dashboard.transactionCount > 0} 
         />
       ) : (
-        <SimulationDashboardPanel outstanding={outstanding} />
+        <SimulationDashboardPanel outstanding={outstanding} metrics={simulationMetrics!} />
       )}
 
       <section className="card tight">

@@ -1,18 +1,27 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui";
-import { ScenarioButtons } from "@/components/demo-actions";
-import { demoBatchCode } from "@/lib/domain/demo-data";
+import { Badge, Metric } from "@/components/ui";
+import { GenerateDataForm, ClearDataButton, ResetDemoButton } from "@/components/demo-actions";
 
-export function SimulationDashboardPanel({ outstanding }: { outstanding: number }) {
+export function SimulationDashboardPanel({ outstanding, metrics }: { outstanding: number, metrics: any }) {
   return (
     <section className="grid-3">
       <article className="card span-2">
         <div className="card-title">
-          <h3>Run Demo Scenario</h3>
+          <h3>Simulation Data Management</h3>
           <Badge>Website Simulation</Badge>
         </div>
-        <p className="muted">Use these controls to execute the approved 8 sent, 7 returned, 1 outstanding storyline through the server-side processing layer.</p>
-        <div style={{ marginTop: 16 }}><ScenarioButtons /></div>
+        <div className="grid-4" style={{ marginTop: 16 }}>
+          <Metric label="Linen Master" value={`${metrics.linen} / ${metrics.limit}`} note="Generated tags" />
+          <Metric label="Laundry Batches" value={`${metrics.batches} / ${metrics.limit}`} note="Simulated batches" />
+          <Metric label="RFID Sessions" value={`${metrics.sessions} / ${metrics.limit}`} note="Simulated scans" />
+          <Metric label="Transactions" value={`${metrics.transactions} / ${metrics.limit}`} note="Simulated logic" />
+        </div>
+        <div style={{ marginTop: 24, display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+          <GenerateDataForm />
+          <div style={{ flex: 1 }} />
+          <ClearDataButton />
+          <ResetDemoButton />
+        </div>
       </article>
       <article className="card">
         <div className="card-title">
@@ -21,8 +30,8 @@ export function SimulationDashboardPanel({ outstanding }: { outstanding: number 
         </div>
         <p>
           {outstanding > 0
-            ? `One item remains outstanding for ${demoBatchCode}. Open Reconciliation to inspect the exact linen ID and EPC.`
-            : "No outstanding linen has been detected yet for the active demo batch."}
+            ? `One or more items remain outstanding. Open Reconciliation to inspect the exact linen ID and EPC.`
+            : "No outstanding linen has been detected yet for active batches."}
         </p>
         <div className="button-row" style={{ marginTop: 16 }}>
           <Link className="btn secondary" href="/reconciliation">Open Reconciliation</Link>
