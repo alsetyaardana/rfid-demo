@@ -1,0 +1,32 @@
+com.hotel.rfid.edge.app-drawerlayout-1.1.1-0 C:\Users\Admin\.gradle\caches\transforms-3\0e26f3955070aefc4caa9d4c37f975de\transformed\drawerlayout-1.1.1\res
+com.hotel.rfid.edge.app-jetified-viewpager2-1.0.0-1 C:\Users\Admin\.gradle\caches\transforms-3\1e52f02b6794cb9938be631ccf8d3b12\transformed\jetified-viewpager2-1.0.0\res
+com.hotel.rfid.edge.app-jetified-DeviceAPI_ver20251103_release-2 C:\Users\Admin\.gradle\caches\transforms-3\29d412252ec95092befa7d3b63b44c27\transformed\jetified-DeviceAPI_ver20251103_release\res
+com.hotel.rfid.edge.app-recyclerview-1.1.0-3 C:\Users\Admin\.gradle\caches\transforms-3\2edb341561a0d0bd4e330a1f68e23c0a\transformed\recyclerview-1.1.0\res
+com.hotel.rfid.edge.app-lifecycle-livedata-core-2.5.1-4 C:\Users\Admin\.gradle\caches\transforms-3\3eb4d2c1fcf26ea82fa0d3fa849ec26f\transformed\lifecycle-livedata-core-2.5.1\res
+com.hotel.rfid.edge.app-jetified-core-ktx-1.10.1-5 C:\Users\Admin\.gradle\caches\transforms-3\41b80f755c8b43b85e2832d080e718dd\transformed\jetified-core-ktx-1.10.1\res
+com.hotel.rfid.edge.app-material-1.9.0-6 C:\Users\Admin\.gradle\caches\transforms-3\48cb89db9f77678758a95bce53c93bda\transformed\material-1.9.0\res
+com.hotel.rfid.edge.app-jetified-startup-runtime-1.1.1-7 C:\Users\Admin\.gradle\caches\transforms-3\49c7368355e7fd2b4e15d55f3d7af816\transformed\jetified-startup-runtime-1.1.1\res
+com.hotel.rfid.edge.app-coordinatorlayout-1.1.0-8 C:\Users\Admin\.gradle\caches\transforms-3\504793b3b7cc56cdf4cabf6de6ca5ff5\transformed\coordinatorlayout-1.1.0\res
+com.hotel.rfid.edge.app-lifecycle-runtime-2.5.1-9 C:\Users\Admin\.gradle\caches\transforms-3\55b53be9abf2172465d5b5ee977eaf2f\transformed\lifecycle-runtime-2.5.1\res
+com.hotel.rfid.edge.app-jetified-annotation-experimental-1.3.0-10 C:\Users\Admin\.gradle\caches\transforms-3\5ae74f5b392adae796b5f60b08901f01\transformed\jetified-annotation-experimental-1.3.0\res
+com.hotel.rfid.edge.app-jetified-lifecycle-process-2.4.1-11 C:\Users\Admin\.gradle\caches\transforms-3\63d12f8a696c81f99d0a1b83c2c17c50\transformed\jetified-lifecycle-process-2.4.1\res
+com.hotel.rfid.edge.app-jetified-emoji2-views-helper-1.2.0-12 C:\Users\Admin\.gradle\caches\transforms-3\6efbbaeb973e0eb28c2e2ccb31c2978c\transformed\jetified-emoji2-views-helper-1.2.0\res
+com.hotel.rfid.edge.app-jetified-lifecycle-viewmodel-savedstate-2.5.1-13 C:\Users\Admin\.gradle\caches\transforms-3\76fa7607564859baa27f9073a61027e6\transformed\jetified-lifecycle-viewmodel-savedstate-2.5.1\res
+com.hotel.rfid.edge.app-cardview-1.0.0-14 C:\Users\Admin\.gradle\caches\transforms-3\8032439894246c11de15ffe35846de16\transformed\cardview-1.0.0\res
+com.hotel.rfid.edge.app-fragment-1.3.6-15 C:\Users\Admin\.gradle\caches\transforms-3\8134c63a281d52b3fb5dc69f6b208ed6\transformed\fragment-1.3.6\res
+com.hotel.rfid.edge.app-jetified-savedstate-1.2.0-16 C:\Users\Admin\.gradle\caches\transforms-3\9b5a3a3554b9031e1c1d85f26aceb3df\transformed\jetified-savedstate-1.2.0\res
+com.hotel.rfid.edge.app-constraintlayout-2.1.4-17 C:\Users\Admin\.gradle\caches\transforms-3\a186004f2f07802202c99b6ffe9585db\transformed\constraintlayout-2.1.4\res
+com.hotel.rfid.edge.app-lifecycle-viewmodel-2.5.1-18 C:\Users\Admin\.gradle\caches\transforms-3\b2b4aae00dad18298fce8bb4da1f2e57\transformed\lifecycle-viewmodel-2.5.1\res
+com.hotel.rfid.edge.app-transition-1.2.0-19 C:\Users\Admin\.gradle\caches\transforms-3\b76a7c0667fbac508cea7726e25df773\transformed\transition-1.2.0\res
+com.hotel.rfid.edge.app-core-1.10.1-20 C:\Users\Admin\.gradle\caches\transforms-3\c50402fc9b208ae78341db3c515ffb32\transformed\core-1.10.1\res
+com.hotel.rfid.edge.app-jetified-activity-1.6.0-21 C:\Users\Admin\.gradle\caches\transforms-3\d73d65a4e4e8fb89ece65239992571a4\transformed\jetified-activity-1.6.0\res
+com.hotel.rfid.edge.app-jetified-appcompat-resources-1.6.1-22 C:\Users\Admin\.gradle\caches\transforms-3\d7470cdfd12a298f30edbddd12c6a73d\transformed\jetified-appcompat-resources-1.6.1\res
+com.hotel.rfid.edge.app-jetified-emoji2-1.2.0-23 C:\Users\Admin\.gradle\caches\transforms-3\d88e1748331298e4122f03665d62af93\transformed\jetified-emoji2-1.2.0\res
+com.hotel.rfid.edge.app-appcompat-1.6.1-24 C:\Users\Admin\.gradle\caches\transforms-3\fb262c2c89ad8ce355751bad2bc5036c\transformed\appcompat-1.6.1\res
+com.hotel.rfid.edge.app-pngs-25 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\build\generated\res\pngs\debug
+com.hotel.rfid.edge.app-resValues-26 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\build\generated\res\resValues\debug
+com.hotel.rfid.edge.app-packageDebugResources-27 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.hotel.rfid.edge.app-packageDebugResources-28 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.hotel.rfid.edge.app-merged_res-29 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\build\intermediates\merged_res\debug
+com.hotel.rfid.edge.app-debug-30 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\src\debug\res
+com.hotel.rfid.edge.app-main-31 C:\Users\Admin\Documents\RFID Demo\android\chainway-edge-app\app\src\main\res
