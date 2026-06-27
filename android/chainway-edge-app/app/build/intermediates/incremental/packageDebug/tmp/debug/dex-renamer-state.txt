@@ -1,4 +1,4 @@
-#Sun Jun 28 02:05:04 WIB 2026
+#Sun Jun 28 03:22:29 WIB 2026
 base.0=C\:\\Users\\Admin\\Documents\\RFID Demo\\android\\chainway-edge-app\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Users\\Admin\\Documents\\RFID Demo\\android\\chainway-edge-app\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\Users\\Admin\\Documents\\RFID Demo\\android\\chainway-edge-app\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex

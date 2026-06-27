@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { OperationMode, ReaderType, TransactionType, ValidationStatus } from "@/lib/domain/enums";
 import { activeDemoReturnEpcs, activeDemoSendEpcs, demoBatchCode } from "@/lib/domain/demo-data";
 import { collapseDuplicateReads, normalizeEpc } from "@/lib/domain/epc";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
+const prisma = getDb("SIMULATION");
 import { buildDemoReads, calculateBatchReconciliation, processRfidReadSession } from "@/lib/services/rfid-processing";
 import { resetDemoData } from "@/lib/services/reset-demo";
 

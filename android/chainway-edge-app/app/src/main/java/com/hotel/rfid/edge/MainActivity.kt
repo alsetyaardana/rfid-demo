@@ -3,9 +3,10 @@ package com.hotel.rfid.edge
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -41,7 +42,11 @@ data class TagData(
     var lastSeenAt: String,
     var readCount: Int,
     var latestRssi: Int,
-    var strongestRssi: Int
+    var strongestRssi: Int,
+    var linenCode: String? = null,
+    var linenType: String? = null,
+    var status: String? = null,
+    var reason: String? = null
 )
 
 data class ScanSession(
@@ -49,7 +54,11 @@ data class ScanSession(
     val startedAt: String,
     var stoppedAt: String?,
     var transactionType: String,
-    val tags: MutableMap<String, TagData>,
+    val laundryBatchCode: String?,
+    val operatorName: String,
+    val checkpoint: String,
+    val tagsMap: MutableMap<String, TagData>,
+    val tagsList: MutableList<TagData>,
     var totalRawReads: Int
 )
 
@@ -58,10 +67,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etServerUrl: EditText
     private lateinit var etApiKey: EditText
     private lateinit var etReaderId: EditText
-    private lateinit var btnTestConnection: Button
-    private lateinit var btnSendDummy: Button
+    private lateinit var btnTestApi: Button
 
+    private lateinit var etOperatorName: EditText
+    private lateinit var etCheckpoint: EditText
+    private lateinit var etBatchCode: EditText
+    private lateinit var layoutBatchCode: View
+    private lateinit var layoutSettings: View
+    private lateinit var btnToggleSettings: Button
+    private lateinit var btnSaveSettings: Button
     private lateinit var spinnerTransactionType: Spinner
+    
     private lateinit var btnStartInventory: Button
     private lateinit var btnStopInventory: Button
     private lateinit var tvInitStatus: TextView
@@ -87,10 +103,17 @@ class MainActivity : AppCompatActivity() {
         etServerUrl = findViewById(R.id.etServerUrl)
         etApiKey = findViewById(R.id.etApiKey)
         etReaderId = findViewById(R.id.etReaderId)
-        btnTestConnection = findViewById(R.id.btnTestConnection)
-        btnSendDummy = findViewById(R.id.btnSendDummy)
+        btnTestApi = findViewById(R.id.btnTestApi)
 
+        etOperatorName = findViewById(R.id.etOperatorName)
+        etCheckpoint = findViewById(R.id.etCheckpoint)
+        etBatchCode = findViewById(R.id.etBatchCode)
+        layoutBatchCode = findViewById(R.id.layoutBatchCode)
+        layoutSettings = findViewById(R.id.layoutSettings)
+        btnToggleSettings = findViewById(R.id.btnToggleSettings)
+        btnSaveSettings = findViewById(R.id.btnSaveSettings)
         spinnerTransactionType = findViewById(R.id.spinnerTransactionType)
+        
         btnStartInventory = findViewById(R.id.btnStartInventory)
         btnStopInventory = findViewById(R.id.btnStopInventory)
         tvInitStatus = findViewById(R.id.tvInitStatus)
@@ -100,10 +123,37 @@ class MainActivity : AppCompatActivity() {
         btnClearSession = findViewById(R.id.btnClearSession)
         btnConfirmUpload = findViewById(R.id.btnConfirmUpload)
 
+        btnToggleSettings.setOnClickListener {
+            if (layoutSettings.visibility == View.VISIBLE) {
+                layoutSettings.visibility = View.GONE
+            } else {
+                layoutSettings.visibility = View.VISIBLE
+            }
+        }
+
+        btnSaveSettings.setOnClickListener {
+            savePrefs()
+            layoutSettings.visibility = View.GONE
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+
         // Setup Spinner
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("STOCK_COUNT", "LAUNDRY_SEND", "LAUNDRY_RETURN"))
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("STOCK_COUNT", "SEND_TO_LAUNDRY", "RETURN_FROM_LAUNDRY"))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTransactionType.adapter = adapter
+        
+        spinnerTransactionType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selected = parent?.getItemAtPosition(position).toString()
+                if (selected == "STOCK_COUNT") {
+                    layoutBatchCode.visibility = View.GONE
+                } else {
+                    layoutBatchCode.visibility = View.VISIBLE
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         // Setup RecyclerView
         tagAdapter = TagAdapter(emptyList())
@@ -113,13 +163,9 @@ class MainActivity : AppCompatActivity() {
         loadPrefs()
         updateUIState(ScanState.INITIALIZING)
 
-        btnTestConnection.setOnClickListener {
+        btnTestApi.setOnClickListener {
             savePrefs()
-            testConnection()
-        }
-        btnSendDummy.setOnClickListener {
-            savePrefs()
-            sendDummySession()
+            testApi()
         }
         btnStartInventory.setOnClickListener {
             if (currentState != ScanState.UPLOADING) {
@@ -132,6 +178,7 @@ class MainActivity : AppCompatActivity() {
             activeSession = null
             tagAdapter.updateData(emptyList())
             tvSummary.text = "Reads: 0 | Unique: 0"
+            loadPrefs()
             updateUIState(ScanState.READY)
         }
         
@@ -148,6 +195,9 @@ class MainActivity : AppCompatActivity() {
         etServerUrl.setText(prefs.getString("ServerUrl", "http://10.10.101.45:3000"))
         etApiKey.setText(prefs.getString("ApiKey", "local-demo-rfid-key"))
         etReaderId.setText(prefs.getString("ReaderId", "C5-DEMO-01"))
+        etOperatorName.setText(prefs.getString("OperatorName", "Demo Operator"))
+        etCheckpoint.setText(prefs.getString("Checkpoint", "LINEN_STORAGE"))
+        etBatchCode.setText(prefs.getString("BatchCode", ""))
     }
 
     private fun savePrefs() {
@@ -156,14 +206,59 @@ class MainActivity : AppCompatActivity() {
             putString("ServerUrl", etServerUrl.text.toString().trim())
             putString("ApiKey", etApiKey.text.toString().trim())
             putString("ReaderId", etReaderId.text.toString().trim())
+            putString("OperatorName", etOperatorName.text.toString().trim())
+            putString("Checkpoint", etCheckpoint.text.toString().trim())
+            putString("BatchCode", etBatchCode.text.toString().trim())
             apply()
         }
+    }
+
+    private fun validatePreScan(): Boolean {
+        val readerId = etReaderId.text.toString().trim()
+        val checkpoint = etCheckpoint.text.toString().trim()
+        val operator = etOperatorName.text.toString().trim()
+        val type = spinnerTransactionType.selectedItem.toString()
+        val batchCode = etBatchCode.text.toString().trim()
+
+        var isValid = true
+        var firstInvalidView: EditText? = null
+
+        if (readerId.isEmpty()) {
+            etReaderId.error = "Required"
+            if (firstInvalidView == null) firstInvalidView = etReaderId
+            isValid = false
+        }
+        if (operator.isEmpty()) {
+            etOperatorName.error = "Required"
+            if (firstInvalidView == null) firstInvalidView = etOperatorName
+            isValid = false
+        }
+        if (checkpoint.isEmpty()) {
+            etCheckpoint.error = "Required"
+            if (firstInvalidView == null) firstInvalidView = etCheckpoint
+            isValid = false
+        }
+        if (type != "STOCK_COUNT" && batchCode.isEmpty()) {
+            etBatchCode.error = "Required"
+            if (firstInvalidView == null) firstInvalidView = etBatchCode
+            isValid = false
+        }
+
+        if (!isValid) {
+            tvStateStatus.text = "Status: Missing required fields"
+            layoutSettings.visibility = View.VISIBLE
+            firstInvalidView?.requestFocus()
+        }
+        return isValid
     }
 
     private fun updateUIState(state: ScanState) {
         currentState = state
         runOnUiThread {
-            tvStateStatus.text = "Status: ${state.name}"
+            if (state != ScanState.ERROR && !tvStateStatus.text.startsWith("Status: API Error") && !tvStateStatus.text.startsWith("Status: SUCCESS")) {
+                tvStateStatus.text = "Status: ${state.name}"
+            }
+            
             when (state) {
                 ScanState.INITIALIZING -> {
                     btnStartInventory.isEnabled = false
@@ -171,6 +266,9 @@ class MainActivity : AppCompatActivity() {
                     btnClearSession.visibility = View.GONE
                     btnConfirmUpload.visibility = View.GONE
                     spinnerTransactionType.isEnabled = false
+                    etOperatorName.isEnabled = false
+                    etCheckpoint.isEnabled = false
+                    etBatchCode.isEnabled = false
                 }
                 ScanState.READY -> {
                     btnStartInventory.isEnabled = true
@@ -178,6 +276,9 @@ class MainActivity : AppCompatActivity() {
                     btnClearSession.visibility = View.GONE
                     btnConfirmUpload.visibility = View.GONE
                     spinnerTransactionType.isEnabled = true
+                    etOperatorName.isEnabled = true
+                    etCheckpoint.isEnabled = true
+                    etBatchCode.isEnabled = true
                 }
                 ScanState.SCANNING -> {
                     btnStartInventory.isEnabled = false
@@ -185,6 +286,9 @@ class MainActivity : AppCompatActivity() {
                     btnClearSession.visibility = View.GONE
                     btnConfirmUpload.visibility = View.GONE
                     spinnerTransactionType.isEnabled = false
+                    etOperatorName.isEnabled = false
+                    etCheckpoint.isEnabled = false
+                    etBatchCode.isEnabled = false
                 }
                 ScanState.REVIEW -> {
                     btnStartInventory.isEnabled = true // Can resume
@@ -192,8 +296,20 @@ class MainActivity : AppCompatActivity() {
                     btnClearSession.visibility = View.VISIBLE
                     btnConfirmUpload.visibility = View.VISIBLE
                     btnConfirmUpload.isEnabled = true
-                    spinnerTransactionType.isEnabled = true // Can change type before upload
-                    tagAdapter.updateData(activeSession?.tags?.values?.toList() ?: emptyList())
+                    spinnerTransactionType.isEnabled = false // Don't let them change type after scan starts
+                    etOperatorName.isEnabled = true
+                    etCheckpoint.isEnabled = true
+                    etBatchCode.isEnabled = true
+                    
+                    val session = activeSession
+                    if (session != null) {
+                        val batchText = if (session.transactionType != "STOCK_COUNT") {
+                            val currentBatch = etBatchCode.text.toString().trim()
+                            if (currentBatch.isNotEmpty()) "\nBatch: $currentBatch" else ""
+                        } else ""
+                        tvSummary.text = "Reads: ${session.totalRawReads} | Unique: ${session.tagsList.size}$batchText"
+                    }
+                    tagAdapter.updateData(activeSession?.tagsList ?: emptyList())
                 }
                 ScanState.UPLOADING -> {
                     btnStartInventory.isEnabled = false
@@ -212,6 +328,7 @@ class MainActivity : AppCompatActivity() {
                     btnClearSession.text = "START NEW SESSION"
                     btnConfirmUpload.visibility = View.GONE
                     spinnerTransactionType.isEnabled = false
+                    tagAdapter.updateData(activeSession?.tagsList ?: emptyList())
                 }
                 ScanState.ERROR -> {
                     btnStartInventory.isEnabled = false
@@ -221,35 +338,13 @@ class MainActivity : AppCompatActivity() {
                     btnConfirmUpload.visibility = View.VISIBLE
                     btnConfirmUpload.isEnabled = true
                     btnConfirmUpload.text = "RETRY UPLOAD"
-                    spinnerTransactionType.isEnabled = true
+                    spinnerTransactionType.isEnabled = false
                 }
             }
         }
     }
 
-    private fun testConnection() {
-        val urlString = etServerUrl.text.toString().trim()
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val url = URL(urlString)
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "GET"
-                conn.connectTimeout = 5000
-                conn.readTimeout = 5000
-                val responseCode = conn.responseCode
-                withContext(Dispatchers.Main) {
-                    tvStateStatus.text = "Test: HTTP $responseCode"
-                }
-                conn.disconnect()
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    tvStateStatus.text = "Test Error: ${e.message}"
-                }
-            }
-        }
-    }
-
-    private fun sendDummySession() {
+    private fun testApi() {
         val urlString = etServerUrl.text.toString().trim()
         val apiKey = etApiKey.text.toString().trim()
         val readerId = etReaderId.text.toString().trim()
@@ -262,11 +357,12 @@ class MainActivity : AppCompatActivity() {
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json")
                 conn.setRequestProperty("X-RFID-API-Key", apiKey)
+                conn.setRequestProperty("X-Demo-Mode", "HARDWARE")
                 conn.doOutput = true
                 conn.connectTimeout = 5000
                 conn.readTimeout = 5000
 
-                val clientSessionId = "C5-DUMMY-" + UUID.randomUUID().toString().substring(0, 8)
+                val clientSessionId = "C5-TEST-" + UUID.randomUUID().toString().substring(0, 8)
                 val timeNow = dateFormat.format(Date())
 
                 val jsonPayload = JSONObject().apply {
@@ -275,17 +371,19 @@ class MainActivity : AppCompatActivity() {
                     put("readerType", "HANDHELD")
                     put("operationMode", "MANUAL")
                     put("dataSource", "LIVE_DEVICE")
-                    put("checkpoint", "LINEN_STORAGE")
-                    put("transactionType", "STOCK_COUNT")
-                    put("operatorName", "Demo Operator")
+                    put("checkpoint", "TEST_CHECKPOINT")
+                    put("transactionType", "STOCK_COUNT") // Fixed non-mutating transaction
+                    put("operatorName", "Test Operator")
                     put("startedAt", timeNow)
                     put("completedAt", timeNow)
                     
                     val tagsArray = JSONArray()
                     val tag1 = JSONObject().apply {
-                        put("epc", "EPC30080001")
-                        put("rssi", -48)
+                        put("epc", "EPC_TEST_001")
+                        put("rssi", -50)
                         put("readCount", 1)
+                        put("firstSeenAt", timeNow)
+                        put("lastSeenAt", timeNow)
                     }
                     tagsArray.put(tag1)
                     put("tags", tagsArray)
@@ -299,12 +397,12 @@ class MainActivity : AppCompatActivity() {
                 val responseCode = conn.responseCode
                 val responseMessage = conn.responseMessage
                 withContext(Dispatchers.Main) {
-                    tvStateStatus.text = "Dummy: HTTP $responseCode $responseMessage"
+                    tvStateStatus.text = "Test API: HTTP $responseCode $responseMessage"
                 }
                 conn.disconnect()
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    tvStateStatus.text = "Dummy Error: ${e.message}"
+                    tvStateStatus.text = "Test API Error: ${e.message}"
                 }
             }
         }
@@ -348,20 +446,30 @@ class MainActivity : AppCompatActivity() {
     private fun startInventory() {
         if (mReader == null || currentState == ScanState.SCANNING) return
         
+        if (!validatePreScan()) {
+            return
+        }
+        
         // If we are starting fresh (not resuming)
         if (activeSession == null || currentState == ScanState.READY || currentState == ScanState.SUCCESS) {
             val type = spinnerTransactionType.selectedItem.toString()
             val timeNow = dateFormat.format(Date())
+            val batchCode = etBatchCode.text.toString().trim()
+            
             activeSession = ScanSession(
                 clientSessionId = "C5-HANDHELD-" + UUID.randomUUID().toString().substring(0, 8),
                 startedAt = timeNow,
                 stoppedAt = null,
                 transactionType = type,
-                tags = mutableMapOf(),
+                laundryBatchCode = if (type == "STOCK_COUNT") null else batchCode,
+                operatorName = etOperatorName.text.toString().trim(),
+                checkpoint = etCheckpoint.text.toString().trim(),
+                tagsMap = mutableMapOf(),
+                tagsList = mutableListOf(),
                 totalRawReads = 0
             )
             tvSummary.text = "Reads: 0 | Unique: 0"
-            tagAdapter.updateData(emptyList())
+            tagAdapter.updateData(activeSession!!.tagsList)
         }
 
         mReader!!.setInventoryCallback(object : IUHFInventoryCallback {
@@ -371,15 +479,29 @@ class MainActivity : AppCompatActivity() {
                     if (rawEpc.isEmpty()) return
                     
                     val rssiStr = info.rssi ?: "0"
-                    // Parse RSSI, handle formats like "-48.20" by picking integer part or parsing float
                     val rssi = try { rssiStr.toFloat().toInt() } catch (e: Exception) { 0 }
                     val timeNow = dateFormat.format(Date())
 
-                    activeSession?.let { session ->
+                    runOnUiThread {
+                        val session = activeSession ?: return@runOnUiThread
                         session.totalRawReads += 1
-                        val existingTag = session.tags[rawEpc]
+                        
+                        val existingTag = session.tagsMap[rawEpc]
+                        var isNew = false
+                        var index = -1
                         if (existingTag == null) {
-                            session.tags[rawEpc] = TagData(rawEpc, timeNow, timeNow, 1, rssi, rssi)
+                            val newTag = TagData(
+                                epc = rawEpc,
+                                firstSeenAt = timeNow,
+                                lastSeenAt = timeNow,
+                                readCount = 1,
+                                latestRssi = rssi,
+                                strongestRssi = rssi
+                            )
+                            session.tagsMap[rawEpc] = newTag
+                            session.tagsList.add(newTag)
+                            isNew = true
+                            index = session.tagsList.size - 1
                         } else {
                             existingTag.lastSeenAt = timeNow
                             existingTag.readCount += 1
@@ -387,14 +509,14 @@ class MainActivity : AppCompatActivity() {
                             if (rssi > existingTag.strongestRssi) {
                                 existingTag.strongestRssi = rssi
                             }
+                            index = session.tagsList.indexOf(existingTag)
                         }
-                    }
-                    
-                    // Throttle UI updates to just summary text
-                    runOnUiThread {
-                        val session = activeSession
-                        if (session != null) {
-                            tvSummary.text = "Reads: ${session.totalRawReads} | Unique: ${session.tags.size}"
+                        
+                        tvSummary.text = "Reads: ${session.totalRawReads} | Unique: ${session.tagsList.size}"
+                        if (isNew) {
+                            tagAdapter.notifyItemInserted(index)
+                        } else if (index != -1) {
+                            tagAdapter.notifyItemChanged(index)
                         }
                     }
                 }
@@ -417,15 +539,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun uploadSession() {
-        if (activeSession == null || activeSession!!.tags.isEmpty()) return
+        if (activeSession == null || activeSession!!.tagsList.isEmpty()) return
+        val session = activeSession!!
+        
+        val actualBatchCode = etBatchCode.text.toString().trim()
+        if (session.transactionType != "STOCK_COUNT" && actualBatchCode.isEmpty()) {
+            tvStateStatus.text = "Status: Missing Batch Code for Upload"
+            layoutSettings.visibility = View.VISIBLE
+            etBatchCode.error = "Required"
+            etBatchCode.requestFocus()
+            return
+        }
         
         val urlString = etServerUrl.text.toString().trim()
         val apiKey = etApiKey.text.toString().trim()
         val readerId = etReaderId.text.toString().trim()
         val endpoint = "$urlString/api/rfid/read-sessions"
-
-        // Update transaction type to match spinner in case it was changed during review
-        activeSession!!.transactionType = spinnerTransactionType.selectedItem.toString()
 
         updateUIState(ScanState.UPLOADING)
 
@@ -436,6 +565,7 @@ class MainActivity : AppCompatActivity() {
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json")
                 conn.setRequestProperty("X-RFID-API-Key", apiKey)
+                conn.setRequestProperty("X-Demo-Mode", "HARDWARE")
                 conn.doOutput = true
                 conn.connectTimeout = 8000
                 conn.readTimeout = 8000
@@ -447,14 +577,26 @@ class MainActivity : AppCompatActivity() {
                     put("readerType", "HANDHELD")
                     put("operationMode", "MANUAL")
                     put("dataSource", "LIVE_DEVICE")
-                    put("checkpoint", "LINEN_STORAGE")
+                    val actualCheckpoint = etCheckpoint.text.toString().trim()
+                    put("checkpoint", if (actualCheckpoint.isNotEmpty()) actualCheckpoint else session.checkpoint)
                     put("transactionType", session.transactionType)
-                    put("operatorName", "Demo Operator")
+                    
+                    if (session.transactionType != "STOCK_COUNT") {
+                        put("laundryBatchCode", actualBatchCode)
+                    }
+                    
+                    val actualOperator = etOperatorName.text.toString().trim()
+                    if (actualOperator.isNotEmpty()) {
+                        put("operatorName", actualOperator)
+                    } else if (session.operatorName.isNotEmpty()) {
+                        put("operatorName", session.operatorName)
+                    }
+                    
                     put("startedAt", session.startedAt)
                     put("completedAt", session.stoppedAt ?: dateFormat.format(Date()))
                     
                     val tagsArray = JSONArray()
-                    session.tags.values.forEach { tag ->
+                    session.tagsList.forEach { tag ->
                         val tagObj = JSONObject().apply {
                             put("epc", tag.epc)
                             put("rssi", tag.strongestRssi)
@@ -483,17 +625,54 @@ class MainActivity : AppCompatActivity() {
                             val responseJson = JSONObject(responseStr)
                             if (responseJson.optBoolean("success")) {
                                 val isReplay = responseJson.optBoolean("idempotentReplay", false)
+                                
+                                // Parse summary
+                                val summary = responseJson.optJSONObject("summary")
+                                if (summary != null) {
+                                    val accepted = summary.optInt("acceptedCount", 0)
+                                    val rejected = summary.optInt("rejectedCount", 0)
+                                    val unknown = summary.optInt("unknownCount", 0)
+                                    tvSummary.text = "Success! Accepted: $accepted | Rejected: $rejected | Unknown: $unknown"
+                                }
+                                
+                                // Parse items
+                                val itemsArray = responseJson.optJSONArray("items")
+                                if (itemsArray != null) {
+                                    for (i in 0 until itemsArray.length()) {
+                                        val item = itemsArray.getJSONObject(i)
+                                        val epc = item.optString("epc")
+                                        val tagData = activeSession?.tagsMap?.get(epc)
+                                        if (tagData != null) {
+                                            tagData.status = item.optString("status", null)
+                                            tagData.reason = item.optString("reason", null)
+                                            if (tagData.reason == "null") tagData.reason = null // org.json parses null literally sometimes
+                                            tagData.linenCode = item.optString("linenCode", null)
+                                            if (tagData.linenCode == "null") tagData.linenCode = null
+                                            tagData.linenType = item.optString("linenType", null)
+                                            if (tagData.linenType == "null") tagData.linenType = null
+                                        }
+                                    }
+                                }
+
                                 tvStateStatus.text = if (isReplay) "Status: SUCCESS (Replay)" else "Status: SUCCESS"
                                 updateUIState(ScanState.SUCCESS)
                             } else {
-                                tvStateStatus.text = "Status: API Error"
+                                val errorMsg = responseJson.optJSONObject("error")?.optString("message", "API Error")
+                                tvStateStatus.text = "Status: API Error - $errorMsg"
                                 updateUIState(ScanState.ERROR)
                             }
                         } catch (e: Exception) {
-                            updateUIState(ScanState.SUCCESS) // Assuming HTTP 200 means success even if JSON parsing fails
+                            tvStateStatus.text = "Status: API Parse Error"
+                            updateUIState(ScanState.ERROR)
                         }
                     } else {
-                        tvStateStatus.text = "Status: HTTP $responseCode"
+                        var errorMsg = "HTTP $responseCode"
+                        try {
+                            val responseJson = JSONObject(responseStr)
+                            errorMsg = responseJson.optJSONObject("error")?.optString("message", errorMsg) ?: errorMsg
+                        } catch (e: Exception) {}
+                        
+                        tvStateStatus.text = "Status: API Error - $errorMsg"
                         updateUIState(ScanState.ERROR)
                     }
                 }

@@ -1,16 +1,17 @@
 import { TransactionType, ValidationStatus } from "@/lib/domain/enums";
 import { demoBatchCode } from "@/lib/domain/demo-data";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { calculateBatchReconciliation } from "@/lib/services/rfid-processing";
 
 export async function getDashboardData() {
+  const prisma = getDb();
   const [linenCounts, batch, sessions, transactions] = await Promise.all([
     prisma.linen.groupBy({ by: ["currentStatus"], _count: true }),
     prisma.laundryBatch.findUnique({ where: { batchCode: demoBatchCode } }),
     prisma.rFIDReadSession.count(),
     prisma.transaction.count()
   ]);
-  const reconciliation = await safeReconciliation();
+  const reconciliation = await safeReconciliation(prisma);
 
   return {
     linenCounts: Object.fromEntries(linenCounts.map((row) => [row.currentStatus, row._count])),
@@ -22,6 +23,7 @@ export async function getDashboardData() {
 }
 
 export async function getLinenMasterData() {
+  const prisma = getDb();
   return prisma.linen.findMany({
     include: { currentLocation: true },
     orderBy: { linenCode: "asc" }
@@ -29,6 +31,7 @@ export async function getLinenMasterData() {
 }
 
 export async function getLaundryBatchData() {
+  const prisma = getDb();
   return prisma.laundryBatch.findMany({
     include: {
       sourceLocation: true,
@@ -40,15 +43,17 @@ export async function getLaundryBatchData() {
 }
 
 export async function getReconciliationData() {
+  const prisma = getDb();
   const batch = await prisma.laundryBatch.findUnique({
     where: { batchCode: demoBatchCode },
     include: { sourceLocation: true, destinationLocation: true }
   });
-  const reconciliation = await safeReconciliation();
+  const reconciliation = await safeReconciliation(prisma);
   return { batch, reconciliation };
 }
 
 export async function getDeviceActivityData() {
+  const prisma = getDb();
   return prisma.rFIDReadSession.findMany({
     include: { reads: true },
     orderBy: { createdAt: "desc" }
@@ -56,6 +61,7 @@ export async function getDeviceActivityData() {
 }
 
 export async function getTransactionHistoryData() {
+  const prisma = getDb();
   return prisma.transaction.findMany({
     include: {
       laundryBatch: true,
@@ -68,6 +74,7 @@ export async function getTransactionHistoryData() {
 }
 
 export async function getAssetData() {
+  const prisma = getDb();
   return prisma.asset.findMany({
     include: { currentLocation: true },
     orderBy: { assetCode: "asc" }
@@ -75,6 +82,7 @@ export async function getAssetData() {
 }
 
 export async function getRfidScanData() {
+  const prisma = getDb();
   const [batch, locations, latestSessions] = await Promise.all([
     prisma.laundryBatch.findUnique({ where: { batchCode: demoBatchCode } }),
     prisma.location.findMany({ orderBy: { code: "asc" } }),
@@ -83,7 +91,7 @@ export async function getRfidScanData() {
   return { batch, locations, latestSessions };
 }
 
-async function safeReconciliation() {
+async function safeReconciliation(prisma: any) {
   try {
     return await calculateBatchReconciliation(prisma, demoBatchCode);
   } catch {
@@ -97,6 +105,7 @@ async function safeReconciliation() {
 }
 
 export async function getSentReturnSummary(batchId: string) {
+  const prisma = getDb();
   const sent = await prisma.transactionItem.count({
     where: {
       transaction: { laundryBatchId: batchId, transactionType: TransactionType.SEND_TO_LAUNDRY },

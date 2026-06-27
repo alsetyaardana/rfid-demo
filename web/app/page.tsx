@@ -14,7 +14,7 @@ export default async function DashboardPage() {
     <div className="screen">
       <SectionHead
         title="Operations Dashboard"
-        body="Real-time view of the active hotel linen RFID demo, calculated from persisted SQLite data."
+        body="Real-time view of the active Porta Nusa Hotel linen RFID demo, calculated from persisted SQLite data."
         action={<ResetDemoButton />}
       />
 

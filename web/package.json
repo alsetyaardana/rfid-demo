@@ -10,7 +10,7 @@
     "test": "vitest run --config vitest.config.mjs",
     "test:watch": "vitest --config vitest.config.mjs",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate": "node scripts/migrate.js",
     "prisma:seed": "tsx prisma/seed.ts",
     "demo:reset": "tsx scripts/reset-demo.ts",
     "demo:scenario": "tsx scripts/run-scenario.ts",

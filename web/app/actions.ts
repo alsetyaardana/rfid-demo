@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { OperationMode, ReaderType, TransactionType } from "@/lib/domain/enums";
 import { activeDemoReturnEpcs, activeDemoSendEpcs, demoBatchCode } from "@/lib/domain/demo-data";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { buildDemoReads, processRfidReadSession } from "@/lib/services/rfid-processing";
 import { resetDemoData } from "@/lib/services/reset-demo";
 
@@ -12,11 +12,13 @@ const revalidateAll = () => {
 };
 
 export async function resetDemoAction() {
+  const prisma = getDb();
   await resetDemoData(prisma);
   revalidateAll();
 }
 
 export async function simulateSendToLaundryAction() {
+  const prisma = getDb();
   const result = await processRfidReadSession(prisma, {
     clientSessionId: `WEB-SEND-${Date.now()}`,
     readerId: "HH-MGR-04",
@@ -35,6 +37,7 @@ export async function simulateSendToLaundryAction() {
 }
 
 export async function simulateReturnFromLaundryAction() {
+  const prisma = getDb();
   const result = await processRfidReadSession(prisma, {
     clientSessionId: `WEB-RETURN-${Date.now()}`,
     readerId: "HH-MGR-04",
@@ -53,6 +56,7 @@ export async function simulateReturnFromLaundryAction() {
 }
 
 export async function simulateUnknownReadAction() {
+  const prisma = getDb();
   const result = await processRfidReadSession(prisma, {
     clientSessionId: `WEB-UNKNOWN-${Date.now()}`,
     readerId: "SIM-WEB-01",
@@ -69,6 +73,7 @@ export async function simulateUnknownReadAction() {
 }
 
 export async function simulateFixedReaderAction() {
+  const prisma = getDb();
   const result = await processRfidReadSession(prisma, {
     clientSessionId: `WEB-FIXED-${Date.now()}`,
     readerId: "FX-LDY-02",

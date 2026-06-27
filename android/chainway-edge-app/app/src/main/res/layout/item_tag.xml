@@ -29,6 +29,22 @@
             android:text="RSSI: -50"
             android:textSize="12sp"
             android:textColor="#666666" />
+            
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="#D32F2F"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TextView

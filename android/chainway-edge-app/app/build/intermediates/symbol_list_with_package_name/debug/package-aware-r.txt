@@ -3106,10 +3106,11 @@ id bounceEnd
 id bounceStart
 id btnClearSession
 id btnConfirmUpload
-id btnSendDummy
+id btnSaveSettings
 id btnStartInventory
 id btnStopInventory
-id btnTestConnection
+id btnTestApi
+id btnToggleSettings
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3191,6 +3192,9 @@ id endToStart
 id enterAlways
 id enterAlwaysCollapsed
 id etApiKey
+id etBatchCode
+id etCheckpoint
+id etOperatorName
 id etReaderId
 id etServerUrl
 id exitUntilCollapsed
@@ -3245,6 +3249,8 @@ id jumpToEnd
 id jumpToStart
 id labeled
 id layout
+id layoutBatchCode
+id layoutSettings
 id left
 id leftToRight
 id legacy
@@ -3490,8 +3496,10 @@ id triangle
 id tvCount
 id tvEpc
 id tvInitStatus
+id tvReason
 id tvRssi
 id tvStateStatus
+id tvStatus
 id tvSummary
 id unchecked
 id uniform

@@ -7,7 +7,7 @@ export default async function AssetManagementPage() {
 
   return (
     <div className="screen">
-      <SectionHead title="Asset Management" body="Potential expansion use case. This screen does not imply asset management is part of the demonstrated Crowne Plaza linen deployment." action={<Badge>Potential Expansion Use Case</Badge>} />
+      <SectionHead title="Asset Management" body="Potential expansion use case. This screen does not imply asset management is part of the demonstrated Porta Nusa Hotel linen deployment." action={<Badge>Potential Expansion Use Case</Badge>} />
       <section className="asset-banner">
         <div>
           <strong>Expansion concept only</strong>
