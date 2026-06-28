@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { validateApiKey } from "@/lib/api/rfid-api";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const prisma = getDb();
   const auth = validateApiKey(request.headers);
   if (!auth.ok) return NextResponse.json(auth.body, { status: auth.status });
 

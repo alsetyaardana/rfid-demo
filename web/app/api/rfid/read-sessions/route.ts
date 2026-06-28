@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { ApiValidationError, buildApiResponse, rfidReadSessionRequestSchema, toProcessSessionInput, validateApiKey, validationError } from "@/lib/api/rfid-api";
 import { processOrReplayRfidReadSession } from "@/lib/services/rfid-processing";
 
 export async function POST(request: Request) {
+  const prisma = getDb();
   const auth = validateApiKey(request.headers);
   if (!auth.ok) return NextResponse.json(auth.body, { status: auth.status });
 

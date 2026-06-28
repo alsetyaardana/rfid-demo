@@ -1,6 +1,6 @@
-import type { PrismaClient } from "@prisma/client";
 import { LaundryBatchStatus } from "@/lib/domain/enums";
 import { assetSeeds, demoBatchCode, initialDemoBatch, linenSeeds, locationSeeds } from "@/lib/domain/demo-data";
+import type { PrismaClient } from "@prisma/client";
 
 export async function resetDemoData(prisma: PrismaClient) {
   await prisma.transactionItem.deleteMany();

@@ -48,6 +48,7 @@ export function validateApiKey(headers: Headers) {
 }
 
 export function toProcessSessionInput(payload: RfidReadSessionRequest): ProcessSessionInput {
+  console.log("RECEIVED PAYLOAD:", JSON.stringify(payload, null, 2));
   assertSupportedCombination(payload);
   const transactionType = mapTransactionType(payload.transactionType);
 

@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { POST } from "@/app/api/rfid/read-sessions/route";
 import { GET } from "@/app/api/rfid/read-sessions/[id]/route";
 import { activeDemoReturnEpcs, activeDemoSendEpcs, demoBatchCode } from "@/lib/domain/demo-data";
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
+const prisma = getDb("SIMULATION");
 import { calculateBatchReconciliation } from "@/lib/services/rfid-processing";
 import { resetDemoData } from "@/lib/services/reset-demo";
 

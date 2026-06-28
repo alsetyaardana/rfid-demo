@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/db";
+import { getDb } from "@/lib/db";
+const prisma = getDb("SIMULATION");
 import { resetDemoData } from "@/lib/services/reset-demo";
 
 async function main() {
