@@ -4,8 +4,8 @@
 
 * Repository: `RFID Demo`
 * Branch: `android-integration`
-* Latest committed checkpoint: `6dc012f`
-* Commit subject: `fix: support dynamic laundry batch reconciliation`
+* Latest committed checkpoint: `c6aa6ce`
+* Commit subject: `feat: add RFID read range power profile control`
 * Remote: `origin/android-integration`
 * Deployment: no production/server deployment has been performed.
 
@@ -42,6 +42,7 @@ Do not treat build success as workflow completion, scripts as browser or physica
 * Live Hardware unknown-EPC polling every approximately 2.5 seconds.
 * Physical flow: C5 unknown scan -> `hardware.db` `UNKNOWN_EPC` -> Web queue -> registration -> rescan accepted.
 * Dynamic Laundry Batch and Reconciliation Logic Fix — `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), `BROWSER VERIFIED`, `DEVICE VERIFIED`, `PHYSICALLY VERIFIED`. Milestone closed. Evidence file: `Testing fitur demo rfid.docx`.
+* RFID Read Range & Power Control — `CODE VERIFIED`, `BUILD VERIFIED`, `DEVICE VERIFIED`, `PHYSICALLY VERIFIED`. Milestone closed. Commit: `c6aa6ce`.
 
 Physical EPC registration polling has been `CODE VERIFIED`, `BUILD VERIFIED`, `BROWSER VERIFIED`, `DEVICE VERIFIED`, and `PHYSICALLY VERIFIED`.
 
@@ -134,24 +135,20 @@ No Android registration editor is required. `STOCK_COUNT` is the approved captur
 
 ### Verification
 
-| Level | Status |
+| Level | Evidence |
 |---|---|
-| `CODE VERIFIED` | Mapping, default, persistence load/save, failure paths, single call site — all confirmed by code inspection |
-| `BUILD VERIFIED` | `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026 |
-| `DEVICE VERIFIED` | Not Yet Verified |
-| `PHYSICALLY VERIFIED` | Not Yet Verified — Near/Medium/Far range not yet measured with real tags on C5 |
+| `CODE VERIFIED` | Mapping, default, persistence load/save, failure paths, single call site — confirmed by code inspection |
+| `BUILD VERIFIED` | `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026. Kotlin 1.8 compatibility fix applied (`entries` → `values()`) |
+| `DEVICE VERIFIED` | APK installed on Chainway C5. Settings panel showed "Read Range / Power" spinner |
+| `PHYSICALLY VERIFIED` | Persistence after SAVE CONFIGURATION and restart confirmed. Near narrowest, Medium intermediate, Far widest — physical comparison passed. Physical trigger (C5 side keys) functional. Regression: `STOCK_COUNT`, `SEND_TO_LAUNDRY`, `RETURN_FROM_LAUNDRY` all passed with profiles active. Web/API and database schema unchanged |
 
-### Next gate
+No deployment verification claimed.
 
-1. Install `app-debug.apk` to Chainway C5
-2. Verify settings panel shows "Read Range / Power" spinner
-3. Select Near → Save → restart app → confirm spinner restores Near
-4. Physical comparison: Near vs Medium vs Far read range with real tags
-5. Regression: STOCK_COUNT, SEND_TO_LAUNDRY, RETURN_FROM_LAUNDRY still functional
+### Milestone status: CLOSED
 
 ## Next Approved Action
 
-RFID Read Range & Power Control is `CODE VERIFIED` and `BUILD VERIFIED`. Next action: DEVICE VERIFIED and PHYSICALLY VERIFIED by Owner/Architect on Chainway C5.
+Chainway C5 RFID Read Range & Power Control milestone is fully closed. No new milestone has been approved. The next action requires Owner/Architect approval.
 
 ## Key Files
 
@@ -161,4 +158,4 @@ RFID Read Range & Power Control is `CODE VERIFIED` and `BUILD VERIFIED`. Next ac
 * `web/app/laundry-batches/page.tsx` — laundry batches UI
 * `web/test-batch-logic.ts` — regression validation script (untracked, not part of commit)
 
-Android source remains unchanged.
+Android source was modified for the RFID Read Range & Power Control milestone (commit `c6aa6ce`). Web source remains unchanged.

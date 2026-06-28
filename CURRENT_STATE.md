@@ -78,28 +78,42 @@ All batch and reconciliation logic has been rewritten to use count-based item qu
 
 Power profile control has been added to the Chainway C5 Android app. Operators can select Near, Medium, or Far read range before scanning. The selected profile persists across app restarts.
 
+**Implementation commit:** `c6aa6ce`
+
 **What changed:**
-* `PowerProfile` enum added: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)` — integer values passed directly to `RFIDWithUHFUART.setPower()`.
+* `PowerProfile` enum added: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)` — integer values passed directly to `RFIDWithUHFUART.setPower()`. Default: `MEDIUM`.
 * Settings panel (`layoutSettings`) now includes a "Read Range / Power" spinner.
-* Profile saved to `SharedPreferences` key `PowerProfile` only on explicit SAVE action.
+* Profile saved to `SharedPreferences` key `PowerProfile` only on explicit SAVE CONFIGURATION action.
 * Profile restored into spinner on app start via `loadPrefs()` — no `setPower()` called at restore time.
 * `setPower()` called with try/catch immediately before every `startInventoryTag()`.
 * Exception or `false` return from `setPower()` prevents inventory from starting; operator sees "Status: FAILED TO SET POWER".
 * Both UI button and physical trigger (C5 side keys) route through the same `startInventory()` — single call site.
+* Web/API, database schema, and laundry business logic were not modified.
+
+**Physical validation result (milestone closed):**
+* APK installed on Chainway C5 with real RFID tags.
+* Settings panel displayed "Read Range / Power" spinner correctly.
+* Persistence confirmed: selected Near → SAVE CONFIGURATION → app restart → spinner restored Near.
+* Physical comparison passed: Near read area narrowest, Medium intermediate, Far widest.
+* Physical trigger (C5 side keys) remained functional throughout.
+* Regression passed: `STOCK_COUNT`, `SEND_TO_LAUNDRY`, and `RETURN_FROM_LAUNDRY` all functional with profiles active.
+* No deployment verification claimed.
 
 **Verification status:**
-* `CODE VERIFIED` — mapping, persistence, failure paths, single call site confirmed by code inspection.
-* `BUILD VERIFIED` — `.\gradlew.bat assembleDebug` passed clean (Kotlin 1.8 compatibility fix applied: `entries` → `values()`).
-* `DEVICE VERIFIED` — Not Yet Verified.
-* `PHYSICALLY VERIFIED` — Not Yet Verified. Near/Medium/Far range difference not yet measured on C5 with real tags.
+* `CODE VERIFIED` — mapping, default, persistence load/save, failure paths, single call site confirmed by code inspection.
+* `BUILD VERIFIED` — `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026.
+* `DEVICE VERIFIED` — APK installed and spinner UI confirmed on Chainway C5.
+* `PHYSICALLY VERIFIED` — Near/Medium/Far physical range comparison passed; persistence after restart passed; regression passed.
+
+### Milestone status: CLOSED
 
 ## Active Defect / Next Approved Milestone
 
-No active defect. RFID Read Range & Power Control is `CODE VERIFIED` and `BUILD VERIFIED`. Gate: install APK to C5, verify persistence after restart, physical Near vs Medium vs Far comparison, regression STOCK_COUNT / SEND_TO_LAUNDRY / RETURN_FROM_LAUNDRY.
+No active defect. Chainway C5 RFID Read Range & Power Control milestone is fully closed. The next milestone requires approval from the Owner/Architect.
 
 ## Later Milestones
 
-* **RFID Read Range Profiles**: ~~Implementing power profiles~~ — completed as "RFID Read Range & Power Control".
+* **RFID Read Range Profiles**: ~~Implementing power profiles~~ — completed as "RFID Read Range & Power Control". Milestone closed.
 * **Final Physical Laundry Acceptance**: Refining real-world transaction accuracy.
 * **APK Download Portal**: Allowing direct download of the Android APK from the Web UI.
 * **Simulation & Hardware User Guides**: Providing distinct onboarding materials for users.
