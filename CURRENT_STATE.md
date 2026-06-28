@@ -5,22 +5,21 @@ Single source of truth for project progress and architecture.
 ## Repository
 
 * **Path:** `C:\Users\Admin\Documents\RFID Demo`
-* **Branch:** `android-integration`
-* **Remote:** `origin/android-integration`
-* **Latest commit:** `docs: finalize local demo package and repository handoff` (see git log for hash)
+* **Stable branch:** `main` — promoted from `android-integration`
+* **Stable tag:** `v1.0-local-demo` → merge commit `c9be489`
+* **Remote:** `origin/main`
 
-### Recent commits
+### Recent commits on main
 
 ```text
-docs: finalize local demo package and repository handoff
-72bf84d feat: add hardware database lifecycle CLI
-858a9e1 fix: align simulation controls and operator guidance
-326a778 docs: complete in-app guides and screenshot package
+c9be489  merge: promote stable RFID local-demo platform to main  (tag: v1.0-local-demo)
+72b3e4d  chore: untrack runtime hardware.db from git index
+4bd2908  docs: finalize local demo package and repository handoff
 ```
 
 ### Working tree status
 
-Clean after final repository closure commit. Runtime/build artifacts (`.gradle/`, `app/build/`, `web/prisma/*.db`, `web/tsconfig.tsbuildinfo`) are now properly gitignored and removed from the index. Android build directories were untracked from the index in the closure commit.
+Clean. `main` is the stable local-demo baseline. `android-integration` is retained at `72b3e4d` as the feature branch history. Runtime/build artifacts are gitignored and removed from the index.
 
 ---
 

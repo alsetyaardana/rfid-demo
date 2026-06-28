@@ -69,6 +69,17 @@ Do not assume a clean working tree. The tree is currently not clean - see `CURRE
 
 `DEPLOYMENT VERIFIED` is not claimed for any milestone.
 
+### Git Promotion to main - CLOSED
+
+* `android-integration` merged to `main` with `--no-ff`
+* Merge commit: `c9be489` — "merge: promote stable RFID local-demo platform to main"
+* Stable tag created and pushed: `v1.0-local-demo`
+* `origin/main` and `origin/android-integration` both confirmed up to date
+* Build verified on `main` (17 routes, no errors)
+* No tracked runtime databases or build artifacts on `main`
+
+`DEPLOYMENT VERIFIED: NOT YET VERIFIED` — production deployment to `linen.alinktech.my.id` is deferred.
+
 ### Final milestone: Repository Closure - CLOSED
 
 What was completed:
