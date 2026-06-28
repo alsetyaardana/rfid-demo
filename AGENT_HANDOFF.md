@@ -112,9 +112,46 @@ No Android registration editor is required. `STOCK_COUNT` is the approved captur
 * No Prisma migration unless the schema actually changes.
 * Do not commit runtime database contents.
 
+## Completed Milestone: RFID Read Range & Power Control
+
+### What was implemented
+
+* `PowerProfile` enum in `MainActivity.kt`: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)`. Default: `MEDIUM`.
+* "Read Range / Power" spinner added to settings panel in `activity_main.xml`.
+* `loadPrefs()` restores saved profile into spinner — does not call `setPower()`.
+* `savePrefs()` persists selected profile to `SharedPreferences` key `PowerProfile` — written only on explicit SAVE.
+* `startInventory()` reads persisted profile, calls `mReader!!.setPower(profile.value)` inside try/catch before `startInventoryTag()`.
+* Exception path: logs `e.javaClass.simpleName` via `Log.e`, sets status "FAILED TO SET POWER", returns — scan does not start.
+* False-return path: same status message and early return — scan does not start.
+* Single call site covers both UI button and physical trigger (C5 side keys).
+
+**Compile fix applied:** `PowerProfile.entries` (Kotlin 1.9 API) replaced with `PowerProfile.values()` to match project Kotlin 1.8.0.
+
+### Files changed
+
+* `android/chainway-edge-app/app/src/main/java/com/hotel/rfid/edge/MainActivity.kt`
+* `android/chainway-edge-app/app/src/main/res/layout/activity_main.xml`
+
+### Verification
+
+| Level | Status |
+|---|---|
+| `CODE VERIFIED` | Mapping, default, persistence load/save, failure paths, single call site — all confirmed by code inspection |
+| `BUILD VERIFIED` | `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026 |
+| `DEVICE VERIFIED` | Not Yet Verified |
+| `PHYSICALLY VERIFIED` | Not Yet Verified — Near/Medium/Far range not yet measured with real tags on C5 |
+
+### Next gate
+
+1. Install `app-debug.apk` to Chainway C5
+2. Verify settings panel shows "Read Range / Power" spinner
+3. Select Near → Save → restart app → confirm spinner restores Near
+4. Physical comparison: Near vs Medium vs Far read range with real tags
+5. Regression: STOCK_COUNT, SEND_TO_LAUNDRY, RETURN_FROM_LAUNDRY still functional
+
 ## Next Approved Action
 
-Dynamic Laundry Batch and Reconciliation Logic Fix milestone is fully closed. No new milestone has been approved. The next action requires Owner/Architect approval.
+RFID Read Range & Power Control is `CODE VERIFIED` and `BUILD VERIFIED`. Next action: DEVICE VERIFIED and PHYSICALLY VERIFIED by Owner/Architect on Chainway C5.
 
 ## Key Files
 

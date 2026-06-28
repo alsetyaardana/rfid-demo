@@ -1,6 +1,7 @@
 package com.hotel.rfid.edge
 
 import android.content.Context
+import android.util.Log
 import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
@@ -35,6 +36,12 @@ import java.util.Locale
 import java.util.UUID
 
 enum class ScanState { INITIALIZING, READY, SCANNING, REVIEW, UPLOADING, SUCCESS, ERROR }
+
+enum class PowerProfile(val value: Int, val label: String) {
+    NEAR(5, "Near"),
+    MEDIUM(18, "Medium"),
+    FAR(30, "Far")
+}
 
 data class TagData(
     val epc: String,
@@ -77,7 +84,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnToggleSettings: Button
     private lateinit var btnSaveSettings: Button
     private lateinit var spinnerTransactionType: Spinner
-    
+    private lateinit var spinnerPowerProfile: Spinner
+
     private lateinit var btnStartInventory: Button
     private lateinit var btnStopInventory: Button
     private lateinit var tvInitStatus: TextView
@@ -113,7 +121,8 @@ class MainActivity : AppCompatActivity() {
         btnToggleSettings = findViewById(R.id.btnToggleSettings)
         btnSaveSettings = findViewById(R.id.btnSaveSettings)
         spinnerTransactionType = findViewById(R.id.spinnerTransactionType)
-        
+        spinnerPowerProfile = findViewById(R.id.spinnerPowerProfile)
+
         btnStartInventory = findViewById(R.id.btnStartInventory)
         btnStopInventory = findViewById(R.id.btnStopInventory)
         tvInitStatus = findViewById(R.id.tvInitStatus)
@@ -154,6 +163,10 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        val powerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, PowerProfile.values().map { it.label })
+        powerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerPowerProfile.adapter = powerAdapter
 
         // Setup RecyclerView
         tagAdapter = TagAdapter(emptyList())
@@ -198,6 +211,9 @@ class MainActivity : AppCompatActivity() {
         etOperatorName.setText(prefs.getString("OperatorName", "Demo Operator"))
         etCheckpoint.setText(prefs.getString("Checkpoint", "LINEN_STORAGE"))
         etBatchCode.setText(prefs.getString("BatchCode", ""))
+        val profileName = prefs.getString("PowerProfile", PowerProfile.MEDIUM.name) ?: PowerProfile.MEDIUM.name
+        val profileIndex = PowerProfile.values().indexOfFirst { it.name == profileName }
+        spinnerPowerProfile.setSelection(if (profileIndex >= 0) profileIndex else PowerProfile.MEDIUM.ordinal)
     }
 
     private fun savePrefs() {
@@ -209,6 +225,8 @@ class MainActivity : AppCompatActivity() {
             putString("OperatorName", etOperatorName.text.toString().trim())
             putString("Checkpoint", etCheckpoint.text.toString().trim())
             putString("BatchCode", etBatchCode.text.toString().trim())
+            val selectedProfile = PowerProfile.values().getOrElse(spinnerPowerProfile.selectedItemPosition) { PowerProfile.MEDIUM }
+            putString("PowerProfile", selectedProfile.name)
             apply()
         }
     }
@@ -523,6 +541,21 @@ class MainActivity : AppCompatActivity() {
             }
         })
         
+        val profileName = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString("PowerProfile", PowerProfile.MEDIUM.name) ?: PowerProfile.MEDIUM.name
+        val profile = PowerProfile.values().find { it.name == profileName } ?: PowerProfile.MEDIUM
+        val powerSet = try {
+            mReader!!.setPower(profile.value)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "setPower exception: ${e.javaClass.simpleName}")
+            tvStateStatus.text = "Status: FAILED TO SET POWER"
+            return
+        }
+        if (!powerSet) {
+            tvStateStatus.text = "Status: FAILED TO SET POWER"
+            return
+        }
+
         if (mReader!!.startInventoryTag()) {
             updateUIState(ScanState.SCANNING)
         } else {

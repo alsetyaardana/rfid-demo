@@ -74,13 +74,32 @@ All batch and reconciliation logic has been rewritten to use count-based item qu
 * Evidence file: `Testing fitur demo rfid.docx`.
 * No deployment verification claimed.
 
+## Completed Milestone: RFID Read Range & Power Control
+
+Power profile control has been added to the Chainway C5 Android app. Operators can select Near, Medium, or Far read range before scanning. The selected profile persists across app restarts.
+
+**What changed:**
+* `PowerProfile` enum added: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)` — integer values passed directly to `RFIDWithUHFUART.setPower()`.
+* Settings panel (`layoutSettings`) now includes a "Read Range / Power" spinner.
+* Profile saved to `SharedPreferences` key `PowerProfile` only on explicit SAVE action.
+* Profile restored into spinner on app start via `loadPrefs()` — no `setPower()` called at restore time.
+* `setPower()` called with try/catch immediately before every `startInventoryTag()`.
+* Exception or `false` return from `setPower()` prevents inventory from starting; operator sees "Status: FAILED TO SET POWER".
+* Both UI button and physical trigger (C5 side keys) route through the same `startInventory()` — single call site.
+
+**Verification status:**
+* `CODE VERIFIED` — mapping, persistence, failure paths, single call site confirmed by code inspection.
+* `BUILD VERIFIED` — `.\gradlew.bat assembleDebug` passed clean (Kotlin 1.8 compatibility fix applied: `entries` → `values()`).
+* `DEVICE VERIFIED` — Not Yet Verified.
+* `PHYSICALLY VERIFIED` — Not Yet Verified. Near/Medium/Far range difference not yet measured on C5 with real tags.
+
 ## Active Defect / Next Approved Milestone
 
-No active defect. The Dynamic Laundry Batch and Reconciliation Logic Fix milestone is fully closed. The next milestone requires approval from the Owner/Architect.
+No active defect. RFID Read Range & Power Control is `CODE VERIFIED` and `BUILD VERIFIED`. Gate: install APK to C5, verify persistence after restart, physical Near vs Medium vs Far comparison, regression STOCK_COUNT / SEND_TO_LAUNDRY / RETURN_FROM_LAUNDRY.
 
 ## Later Milestones
 
-* **RFID Read Range Profiles**: Implementing power profiles (`NEAR`, `MEDIUM`, `FAR`, `CUSTOM`).
+* **RFID Read Range Profiles**: ~~Implementing power profiles~~ — completed as "RFID Read Range & Power Control".
 * **Final Physical Laundry Acceptance**: Refining real-world transaction accuracy.
 * **APK Download Portal**: Allowing direct download of the Android APK from the Web UI.
 * **Simulation & Hardware User Guides**: Providing distinct onboarding materials for users.
