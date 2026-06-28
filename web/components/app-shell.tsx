@@ -81,6 +81,10 @@ export function AppShell({ children }: { children: ReactNode }) {
               <button className="nav-button mode-btn" disabled>API Configuration Information</button>
             </>
           )}
+
+          <h4>Documentation</h4>
+          <Link className="nav-button mode-btn" href="/guides/system-overview">System Overview</Link>
+          <Link className="nav-button mode-btn" href="/guides/operator-checklist">Demo Operator Checklist</Link>
         </div>
 
         <div className="sidebar-status">
