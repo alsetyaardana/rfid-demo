@@ -15,6 +15,7 @@ This document serves as the single source of truth for the project's progress an
 * **Web-First Physical EPC Registration Polling**: Hardware Linen Master polls for physical `UNKNOWN_EPC`s every 2.5 seconds and updates the registration queue without a manual browser refresh.
 * **C5 Physical Upload Validation**: Repository-built APK installed on Chainway C5 and confirmed to upload a fresh `STOCK_COUNT` session to `hardware.db`; the fresh `UNKNOWN_EPC` appeared in the Web registration queue.
 * **Branding**: Full transition to "Porta Nusa Hotel" and "Porta Nusa Operator" branding.
+* **Dynamic Laundry Batch and Reconciliation Logic Fix**: All batch and reconciliation logic corrected. `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), and `BROWSER VERIFIED`. Physical C5 validation pending.
 
 ## Current Architecture
 
@@ -39,6 +40,35 @@ Registration remains Web-first while the Android app only uploads RFID sessions.
 8. Next hardware scan recognizes the EPC immediately.
 
 **Latest physical validation:** A repository-built APK was installed on Chainway C5 `636e8268`. A fresh `STOCK_COUNT` upload for EPC `494E562D4153542D30303031` reached `http://10.10.101.45:3000/api/rfid/read-sessions`, persisted to the active `web/prisma/hardware.db` with `validationStatus=UNKNOWN_EPC`, and appeared in `GET /api/hardware/unknown-epcs`.
+
+## Completed Fix: Dynamic Laundry Batch and Reconciliation Logic
+
+All batch and reconciliation logic has been rewritten to use count-based item quantities. The hardcoded `LB-DEMO-001` dependency has been removed from all server-side queries and UI pages.
+
+**What changed:**
+* `SEND_TO_LAUNDRY` now safely find-or-creates the batch using the exact submitted batch code.
+* `calculateReconciliation` uses count-per-EPC map logic instead of Set deduplication.
+* `getReconciliationData` returns all batches with `outstanding > 0` as an array.
+* Dashboard, RFID scan, and reconciliation queries no longer reference `LB-DEMO-001`.
+* Laundry Batches status column is now computed from live `sent`/`outstanding` counts, not the stale stored `batch.status`.
+* Reconciliation page renders independently per outstanding batch.
+
+**Browser-verified evidence for `LB-HW-1`:**
+* Laundry Batches: Sent 9, Returned 5, Outstanding 4, Status **In Progress**
+* Reconciliation: Active Batches 1, Total Sent 9, Total Returned 5, Total Outstanding 4
+* No `LB-DEMO-001` dependency found in any hardware-mode response.
+* Simulation mode isolated: `LB-HW-1` not visible, empty state rendered correctly.
+
+**Pending physical validation (milestone not fully closed):**
+* Physical C5 `SEND_TO_LAUNDRY` using a new batch code that does not yet exist.
+* Partial return keeps batch In Progress.
+* Full return makes outstanding 0 and status Completed.
+* Wrong-batch return is rejected by the server.
+* Correct return affects only the submitted batch.
+
+## Active Defect / Next Approved Milestone
+
+No new defect is currently confirmed. The next action is physical C5 validation to fully close the Dynamic Laundry Batch and Reconciliation Logic Fix milestone, followed by approval of the next milestone from the Owner/Architect.
 
 ## Later Milestones
 

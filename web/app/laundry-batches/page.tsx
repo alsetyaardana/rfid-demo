@@ -1,5 +1,4 @@
 import { Badge, DataTable, Metric, SectionHead } from "@/components/ui";
-import { enumText } from "@/components/ui";
 import { getLaundryBatchData, getSentReturnSummary } from "@/lib/services/queries";
 import { headers } from "next/headers";
 
@@ -39,7 +38,7 @@ export default async function LaundryBatchesPage() {
               summaries[index].sent,
               summaries[index].returned,
               summaries[index].outstanding,
-              enumText(batch.status)
+              summaries[index].outstanding > 0 ? "In Progress" : (summaries[index].sent > 0 ? "Completed" : "-")
             ])}
           />
         </section>

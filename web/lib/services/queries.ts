@@ -1,13 +1,12 @@
 import { TransactionType, ValidationStatus } from "@/lib/domain/enums";
-import { demoBatchCode } from "@/lib/domain/demo-data";
 import { getDb } from "@/lib/db";
-import { calculateBatchReconciliation } from "@/lib/services/rfid-processing";
+import { calculateAllBatchesReconciliation, calculateBatchReconciliation } from "@/lib/services/rfid-processing";
 
 export async function getDashboardData() {
   const prisma = getDb();
   const [linenCounts, batch, sessions, transactions] = await Promise.all([
     prisma.linen.groupBy({ by: ["currentStatus"], _count: true }),
-    prisma.laundryBatch.findUnique({ where: { batchCode: demoBatchCode } }),
+    prisma.laundryBatch.findFirst({ orderBy: { createdAt: "desc" } }),
     prisma.rFIDReadSession.count(),
     prisma.transaction.count()
   ]);
@@ -49,12 +48,17 @@ export async function getLaundryBatchData() {
 
 export async function getReconciliationData() {
   const prisma = getDb();
-  const batch = await prisma.laundryBatch.findUnique({
-    where: { batchCode: demoBatchCode },
-    include: { sourceLocation: true, destinationLocation: true }
+  const batches = await prisma.laundryBatch.findMany({
+    include: { sourceLocation: true, destinationLocation: true },
+    orderBy: { createdAt: "desc" }
   });
-  const reconciliation = await safeReconciliation(prisma);
-  return { batch, reconciliation };
+  const results = await Promise.all(
+    batches.map(async (batch: typeof batches[number]) => ({
+      batch,
+      reconciliation: await calculateBatchReconciliation(prisma, batch.batchCode)
+    }))
+  );
+  return results.filter(({ reconciliation }) => reconciliation.outstandingCount > 0);
 }
 
 export async function getDeviceActivityData() {
@@ -89,7 +93,7 @@ export async function getAssetData() {
 export async function getRfidScanData() {
   const prisma = getDb();
   const [batch, locations, latestSessions] = await Promise.all([
-    prisma.laundryBatch.findUnique({ where: { batchCode: demoBatchCode } }),
+    prisma.laundryBatch.findFirst({ orderBy: { createdAt: "desc" } }),
     prisma.location.findMany({ orderBy: { code: "asc" } }),
     prisma.rFIDReadSession.findMany({ include: { reads: true }, orderBy: { createdAt: "desc" }, take: 5 })
   ]);
@@ -98,14 +102,9 @@ export async function getRfidScanData() {
 
 async function safeReconciliation(prisma: any) {
   try {
-    return await calculateBatchReconciliation(prisma, demoBatchCode);
+    return await calculateAllBatchesReconciliation(prisma);
   } catch {
-    return {
-      sentCount: 0,
-      returnedCount: 0,
-      outstandingCount: 0,
-      outstandingItems: []
-    };
+    return { sentCount: 0, returnedCount: 0, outstandingCount: 0, outstandingItems: [] };
   }
 }
 

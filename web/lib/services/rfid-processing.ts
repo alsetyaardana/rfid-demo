@@ -92,14 +92,28 @@ async function processInsideTransaction(tx: Prisma.TransactionClient, input: Pro
   });
   const linenByEpc = new Map(linens.map((linen) => [linen.epc, linen]));
 
-  const batch = input.laundryBatchCode
+  let batch = input.laundryBatchCode
     ? await tx.laundryBatch.findUnique({
         where: { batchCode: input.laundryBatchCode },
         include: { sourceLocation: true, destinationLocation: true, transactions: { include: { items: true } } }
       })
     : null;
 
-  if ((input.transactionType === "SEND_TO_LAUNDRY" || input.transactionType === "RETURN_FROM_LAUNDRY") && !batch) {
+  if (input.transactionType === TransactionType.SEND_TO_LAUNDRY && input.laundryBatchCode && !batch) {
+    const srcLoc = await tx.location.findUniqueOrThrow({ where: { code: input.sourceLocationCode ?? "LINEN-RM" } });
+    const dstLoc = await tx.location.findUniqueOrThrow({ where: { code: input.destinationLocationCode ?? "EXT-LDY" } });
+    batch = await tx.laundryBatch.create({
+      data: {
+        batchCode: input.laundryBatchCode,
+        sourceLocationId: srcLoc.id,
+        destinationLocationId: dstLoc.id,
+        status: LaundryBatchStatus.CREATED
+      },
+      include: { sourceLocation: true, destinationLocation: true, transactions: { include: { items: true } } }
+    });
+  }
+
+  if ((input.transactionType === TransactionType.SEND_TO_LAUNDRY || input.transactionType === TransactionType.RETURN_FROM_LAUNDRY) && !batch) {
     throw new Error("Laundry batch is required for this transaction.");
   }
 
@@ -389,8 +403,15 @@ async function calculateReconciliation(tx: Tx, batchId: string) {
     }
   });
 
-  const returnedEpcs = new Set(returnedItems.map((item) => item.epc));
-  const outstanding = sentItems.filter((item) => !returnedEpcs.has(item.epc));
+  const availableReturns = new Map<string, number>();
+  for (const item of returnedItems) {
+    availableReturns.set(item.epc, (availableReturns.get(item.epc) ?? 0) + 1);
+  }
+  const outstanding = sentItems.filter((item) => {
+    const credits = availableReturns.get(item.epc) ?? 0;
+    if (credits > 0) { availableReturns.set(item.epc, credits - 1); return false; }
+    return true;
+  });
 
   return {
     sentCount: sentItems.length,
@@ -403,6 +424,18 @@ async function calculateReconciliation(tx: Tx, batchId: string) {
       lastKnownLocation: "Laundry Dispatch Gate",
       lastReader: "FX-LDY-02"
     }))
+  };
+}
+
+export async function calculateAllBatchesReconciliation(prisma: PrismaClient) {
+  const batches = await prisma.laundryBatch.findMany({ select: { id: true } });
+  if (batches.length === 0) return { sentCount: 0, returnedCount: 0, outstandingCount: 0, outstandingItems: [] };
+  const results = await Promise.all(batches.map((b) => calculateReconciliation(prisma, b.id)));
+  return {
+    sentCount: results.reduce((s, r) => s + r.sentCount, 0),
+    returnedCount: results.reduce((s, r) => s + r.returnedCount, 0),
+    outstandingCount: results.reduce((s, r) => s + r.outstandingCount, 0),
+    outstandingItems: results.flatMap((r) => r.outstandingItems)
   };
 }
 
