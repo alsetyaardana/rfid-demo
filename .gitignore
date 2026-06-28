@@ -5,6 +5,12 @@ web/coverage/
 web/*.log
 web/prisma/dev.db
 web/prisma/dev.db-journal
+web/prisma/hardware.db
+web/prisma/hardware.db-wal
+web/prisma/hardware.db-shm
+web/prisma/hardware.db.bak-*
+web/prisma/hardware.backup.*.db
+web/prisma/backups/
 web/.env.local
 web/.env
 web/temp/

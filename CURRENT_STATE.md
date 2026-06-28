@@ -1,4 +1,4 @@
-# Current State — Porta Nusa Hotel RFID Linen Visibility Platform
+# Current State - Porta Nusa Hotel RFID Linen Visibility Platform
 
 Single source of truth for project progress and architecture.
 
@@ -7,44 +7,34 @@ Single source of truth for project progress and architecture.
 * **Path:** `C:\Users\Admin\Documents\RFID Demo`
 * **Branch:** `android-integration`
 * **Remote:** `origin/android-integration`
-* **Latest commit:** `326a778 docs: complete in-app guides and screenshot package`
+* **Latest commit:** `858a9e1 fix: align simulation controls and operator guidance`
 
 ### Recent commits
 
-```
+```text
+858a9e1 fix: align simulation controls and operator guidance
 326a778 docs: complete in-app guides and screenshot package
 7466e0b docs: close RFID read range power control milestone
-c6aa6ce feat: add RFID read range power profile control
-4f3a589 docs: close dynamic laundry reconciliation milestone
-6dc012f fix: support dynamic laundry batch reconciliation
 ```
 
 ### Working tree status
 
-Not clean. Untracked additions:
-* `docs/` — screenshot assets and manifest (new, not yet committed)
-* `web/app/guides/operator-checklist/` — operator checklist guide route (new, not yet committed)
+Not clean. Local runtime/build artifacts are expected (`.gradle/`, `app/build/`, `web/prisma/*.db`, `web/tsconfig.tsbuildinfo`, local backup files). Screenshot asset files may also be locally modified. Do not stage or clean these artifacts blindly.
 
-Modified (uncommitted):
-* `web/app/guides/hardware/page.tsx`
-* `web/app/guides/simulation/page.tsx`
-* `web/app/guides/system-overview/page.tsx`
-* `web/components/app-shell.tsx`
-
-Build and runtime artifacts also show as modified (`.gradle/`, `app/build/`, `web/prisma/*.db`, `web/tsconfig.tsbuildinfo`) — these must not be committed.
+Current milestone implementation adds uncommitted Hardware database maintenance scripts and documentation under the `web/` and `docs/` surfaces only.
 
 ---
 
 ## Architecture
 
-```
-Simulation Browser  →  X-Demo-Mode: SIMULATION  →  simulation.db
-Hardware Browser    →  X-Demo-Mode: HARDWARE    →  hardware.db
-Chainway C5 Android →  X-Demo-Mode: HARDWARE    →  hardware.db
+```text
+Simulation Browser  ->  X-Demo-Mode: SIMULATION  ->  simulation.db
+Hardware Browser    ->  X-Demo-Mode: HARDWARE    ->  hardware.db
+Chainway C5 Android ->  X-Demo-Mode: HARDWARE    ->  hardware.db
 ```
 
-* `web/` — Next.js 14 App Router, Prisma ORM, SQLite, server components, RFID HTTP API
-* `android/chainway-edge-app/` — Chainway C5 E710 Android (Kotlin, `RFIDWithUHFUART` SDK)
+* `web/` - Next.js 14 App Router, Prisma ORM, SQLite, server components, RFID HTTP API
+* `android/chainway-edge-app/` - Chainway C5 E710 Android (Kotlin, `RFIDWithUHFUART` SDK)
 * Middleware injects `X-Demo-Mode` header from the `demoMode` cookie
 * Android hardcodes `X-Demo-Mode: HARDWARE` in every API request
 * Web/API is the sole owner of validation and business logic
@@ -74,47 +64,47 @@ Chainway C5 Android →  X-Demo-Mode: HARDWARE    →  hardware.db
 **Milestone status: CLOSED**
 
 Root causes resolved:
-* Reconciliation was hardcoded to `LB-DEMO-001` — eliminated
-* `calculateReconciliation` used Set deduplication — replaced with count-per-EPC map
+* Reconciliation was hardcoded to `LB-DEMO-001` - eliminated
+* `calculateReconciliation` used Set deduplication - replaced with count-per-EPC map
 * `SEND_TO_LAUNDRY` now find-or-creates the batch using the exact submitted code
 * Laundry Batches status column now computed from live counts, not stale stored value
 
 Business rules in effect:
 * `outstanding = acceptedSent - validReturned` (per EPC, count-based)
-* `outstanding > 0` → In Progress; `outstanding = 0 and acceptedSent > 0` → Completed
+* `outstanding > 0` -> In Progress; `outstanding = 0 and acceptedSent > 0` -> Completed
 * Every submitted batch code is independent
 * Reconciliation shows every active-mode batch with `outstanding > 0`
 
 **Verification:**
-* `CODE VERIFIED` — all changes reviewed against business rules
-* `BUILD VERIFIED` — `npx tsc --noEmit` clean; `npx next build` passes all 14 routes
-* `AUTOMATED TESTED` — 17/17 assertions: Batch A send/partial/full return; Batch B independence, wrong-batch rejection, partial return; hardware batch with no `LB-DEMO-001` dependency
-* `BROWSER VERIFIED` — Hardware mode: `LB-HW-1` Sent 9 / Returned 5 / Outstanding 4 / In Progress; Simulation empty state confirmed; database isolation confirmed
-* `DEVICE VERIFIED` — Chainway C5 with real RFID tags in Hardware Mode
-* `PHYSICALLY VERIFIED` — Dynamic SEND creation, partial return In Progress, `WRONG_BATCH` rejection, `ALREADY_RETURNED` rejection, full return Completed, batch removed from Reconciliation, empty state confirmed. Evidence file: `Testing fitur demo rfid.docx`
+* `CODE VERIFIED` - all changes reviewed against business rules
+* `BUILD VERIFIED` - `npx tsc --noEmit` clean; `npx next build` passes all 14 routes
+* `AUTOMATED TESTED` - 17/17 assertions: Batch A send/partial/full return; Batch B independence, wrong-batch rejection, partial return; hardware batch with no `LB-DEMO-001` dependency
+* `BROWSER VERIFIED` - Hardware mode: `LB-HW-1` Sent 9 / Returned 5 / Outstanding 4 / In Progress; Simulation empty state confirmed; database isolation confirmed
+* `DEVICE VERIFIED` - Chainway C5 with real RFID tags in Hardware Mode
+* `PHYSICALLY VERIFIED` - Dynamic SEND creation, partial return In Progress, `WRONG_BATCH` rejection, `ALREADY_RETURNED` rejection, full return Completed, batch removed from Reconciliation, empty state confirmed. Evidence file: `Testing fitur demo rfid.docx`
 
 DEPLOYMENT VERIFIED: not claimed.
 
 ### RFID Read Range & Power Control
 
-**Milestone status: CLOSED — commit `c6aa6ce`**
+**Milestone status: CLOSED - commit `c6aa6ce`**
 
 What was implemented:
-* `PowerProfile` enum: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)` — integer values passed directly to `RFIDWithUHFUART.setPower()`. Default: `MEDIUM`
+* `PowerProfile` enum: `NEAR(5)`, `MEDIUM(18)`, `FAR(30)` - integer values passed directly to `RFIDWithUHFUART.setPower()`. Default: `MEDIUM`
 * Settings panel (`layoutSettings`) includes "Read Range / Power" spinner
 * Profile persisted to `SharedPreferences` key `PowerProfile` on explicit SAVE CONFIGURATION only
-* Profile restored into spinner on app start via `loadPrefs()` — no `setPower()` called at restore
-* `setPower()` called in try/catch before every `startInventoryTag()` — both UI button and physical trigger share the single `startInventory()` call site
+* Profile restored into spinner on app start via `loadPrefs()` - no `setPower()` called at restore
+* `setPower()` called in try/catch before every `startInventoryTag()` - both UI button and physical trigger share the single `startInventory()` call site
 * Exception or `false` return from `setPower()` stops scan; operator sees "Status: FAILED TO SET POWER"
 * Web/API, database schema, and laundry business logic unchanged
 
 Files changed: `MainActivity.kt`, `activity_main.xml`
 
 **Verification:**
-* `CODE VERIFIED` — mapping, default, persistence load/save, failure paths, single call site confirmed
-* `BUILD VERIFIED` — `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026. Kotlin 1.8 compatibility fix applied (`entries` → `values()`)
-* `DEVICE VERIFIED` — APK installed on Chainway C5; spinner UI confirmed
-* `PHYSICALLY VERIFIED` — Near narrowest / Medium intermediate / Far widest comparison passed; persistence after restart passed; physical trigger functional; `STOCK_COUNT`, `SEND_TO_LAUNDRY`, `RETURN_FROM_LAUNDRY` regression passed
+* `CODE VERIFIED` - mapping, default, persistence load/save, failure paths, single call site confirmed
+* `BUILD VERIFIED` - `.\gradlew.bat assembleDebug` clean. APK: `app-debug.apk` 11.1 MB, 28 Jun 2026. Kotlin 1.8 compatibility fix applied (`entries` -> `values()`)
+* `DEVICE VERIFIED` - APK installed on Chainway C5; spinner UI confirmed
+* `PHYSICALLY VERIFIED` - Near narrowest / Medium intermediate / Far widest comparison passed; persistence after restart passed; physical trigger functional; `STOCK_COUNT`, `SEND_TO_LAUNDRY`, `RETURN_FROM_LAUNDRY` regression passed
 
 DEPLOYMENT VERIFIED: not claimed.
 
@@ -132,7 +122,7 @@ Four guide routes implemented as rich inline TSX server components (no PDF rende
 | `/guides/operator-checklist` | Demo Operator Checklist |
 
 Navigation behavior in `app-shell.tsx`:
-* **System Overview** and **Demo Operator Checklist** appear under a global DOCUMENTATION section — visible in both modes
+* **System Overview** and **Demo Operator Checklist** appear under a global DOCUMENTATION section - visible in both modes
 * **Simulation Guidance** link appears in the Simulation Tools section (Simulation Mode only)
 * **Hardware Setup Guidance** link appears in the Hardware Tools section (Hardware Mode only)
 * Existing guide topbar (`DOCUMENTATION / Guide Preview`) and "Return to Demo" link preserved
@@ -140,9 +130,9 @@ Navigation behavior in `app-shell.tsx`:
 Files changed: `web/components/app-shell.tsx`, `web/app/guides/system-overview/page.tsx`, `web/app/guides/simulation/page.tsx`, `web/app/guides/hardware/page.tsx`, `web/app/guides/operator-checklist/page.tsx` (new)
 
 **Verification:**
-* `CODE VERIFIED` — TypeScript; all routes render as server components with no client-side dependencies
-* `BUILD VERIFIED` — `npx next build` passes; all guide routes compiled without errors
-* `BROWSER VERIFIED` — All four routes loaded and rendered correctly in Chrome. Navigation links confirmed in both Simulation and Hardware Mode sidebars
+* `CODE VERIFIED` - TypeScript; all routes render as server components with no client-side dependencies
+* `BUILD VERIFIED` - `npx next build` passes; all guide routes compiled without errors
+* `BROWSER VERIFIED` - All four routes loaded and rendered correctly in Chrome. Navigation links confirmed in both Simulation and Hardware Mode sidebars
 
 DEPLOYMENT VERIFIED: not claimed.
 
@@ -156,7 +146,7 @@ Assets located at `docs/screenshots/`. Manifest: `docs/screenshots/SCREENSHOT_MA
 
 | File | Description |
 |---|---|
-| `web/web_00_landing_mode_selection.png` | Landing page — mode selection cards |
+| `web/web_00_landing_mode_selection.png` | Landing page - mode selection cards |
 | `web/web_01_hw_dashboard.png` | Hardware Mode Dashboard (Available: 3, Tx: 4) |
 | `web/web_02_hw_linen_master.png` | Hardware Mode Linen Master |
 | `web/web_03_hw_laundry_batches.png` | Hardware Mode Laundry Batches |
@@ -189,8 +179,8 @@ Assets located at `docs/screenshots/`. Manifest: `docs/screenshots/SCREENSHOT_MA
 * C5 `WRONG_BATCH` rejection screenshot
 
 **Verification:**
-* `BROWSER VERIFIED` — Chrome MCP navigation confirmed each page loaded; all 14 web screenshots captured through browser navigation; all four guide routes rendered successfully
-* `DEVICE VERIFIED` — 8 Android screenshots captured via ADB from Chainway C5 `636e8268`
+* `BROWSER VERIFIED` - Chrome MCP navigation confirmed each page loaded; all 14 web screenshots captured through browser navigation; all four guide routes rendered successfully
+* `DEVICE VERIFIED` - 8 Android screenshots captured via ADB from Chainway C5 `636e8268`
 
 Screenshots may reflect environment-specific demo data (simulation.db had 20 items; hardware.db had 3 items at time of capture). Screenshots do not independently constitute physical workflow provenance.
 
@@ -217,10 +207,40 @@ Files changed:
 * `docs/screenshots/SCREENSHOT_MANIFEST.md`
 
 **Verification:**
-* `CODE VERIFIED` — Simulation UI text, navigation, and guide references aligned with the approved behavior
-* `BUILD VERIFIED` — `npx.cmd tsc --noEmit` clean after fresh build; `npm.cmd run build` passed all 17 app routes
-* `BROWSER VERIFIED` — Simulation Dashboard, RFID Scan, Simulation Guide, and Operator Checklist validated on localhost; Dashboard buttons `Clear Generated Data`, `Generate Demo Data`, and `Reset Database` click-tested successfully
-* `BROWSER VERIFIED` — Hardware Dashboard smoke check passed after Simulation changes
+* `CODE VERIFIED` - Simulation UI text, navigation, and guide references aligned with the approved behavior
+* `BUILD VERIFIED` - `npx.cmd tsc --noEmit` clean after fresh build; `npm.cmd run build` passed all 17 app routes
+* `BROWSER VERIFIED` - Simulation Dashboard, RFID Scan, Simulation Guide, and Operator Checklist validated on localhost; Dashboard buttons `Clear Generated Data`, `Generate Demo Data`, and `Reset Database` click-tested successfully
+* `BROWSER VERIFIED` - Hardware Dashboard smoke check passed after Simulation changes
+
+DEPLOYMENT VERIFIED: not claimed.
+
+### Hardware Demo Baseline & Reset Workflow - CLI Only
+
+**Milestone status: IMPLEMENTED**
+
+What was implemented:
+* Hardware-only CLI scripts: `hardware:init`, `hardware:backup`, `hardware:reset`, `hardware:verify`
+* Safe helper layer in `web/scripts/` with explicit `file:./hardware.db` targeting
+* Canonical Hardware baseline initializer for:
+  * `LINEN-RM | Main Linen Room | STORAGE`
+  * `EXT-LDY | Central Laundry | LAUNDRY`
+* Timestamped backup flow under `web/prisma/backups/hardware/`
+* Hardware-only reset flow: backup -> delete hardware DB files -> `prisma migrate deploy` against `hardware.db` only -> initialize baseline -> verify
+* CLI runbook: `docs/HARDWARE_DATABASE_RUNBOOK.md`
+
+Files changed:
+* `.gitignore`
+* `docs/HARDWARE_DATABASE_RUNBOOK.md`
+* `web/package.json`
+* `web/scripts/hardware-db-utils.js`
+* `web/scripts/hardware-init.js`
+* `web/scripts/hardware-backup.js`
+* `web/scripts/hardware-reset.js`
+* `web/scripts/hardware-verify.js`
+
+**Verification:**
+* `CODE VERIFIED` - hardware-only datasource isolation and backup/reset flow reviewed against milestone constraints
+* `AUTOMATED TESTED` - `hardware:init` idempotency, `hardware:backup`, one-command `hardware:reset`, and `hardware:verify` PASS confirmed on Windows; `simulation.db` size, timestamp, and counts unchanged before/after reset
 
 DEPLOYMENT VERIFIED: not claimed.
 
@@ -234,7 +254,8 @@ DEPLOYMENT VERIFIED: not claimed.
 | Simulation Mode User Guide (in-app) | Complete |
 | Hardware Mode User Guide (in-app) | Complete |
 | Demo Operator Checklist (in-app) | Complete |
-| Screenshot asset package | Complete — 22 PNG files (8 Android, 14 Web) |
+| Hardware database CLI runbook | Complete |
+| Screenshot asset package | Complete - 22 PNG files (8 Android, 14 Web) |
 | PDF Documentation Package | Not yet created |
 | Partner-Ready PPTX | Not yet created |
 | Docker + Cloudflare deployment | Not yet performed |
@@ -259,7 +280,8 @@ Deployment has been intentionally deferred. `DEPLOYMENT VERIFIED` is not claimed
 * C5 SEND_TO_LAUNDRY accepted-result screenshot not captured
 * C5 `WRONG_BATCH` rejection screenshot not captured
 * Screenshots reflect environment-specific demo data at time of capture
-* Working tree is not clean (docs/ and guide pages are uncommitted)
+* Working tree is not clean (runtime/build artifacts and local DB-related files are present)
+* Runtime database files are tracked in the repository today, so `.gitignore` only protects new artifacts and sidecars unless the index is cleaned in a separate approved change
 
 ---
 
@@ -267,8 +289,7 @@ Deployment has been intentionally deferred. `DEPLOYMENT VERIFIED` is not claimed
 
 **PDF Documentation Package**
 
-Use the in-app documentation routes as primary content source. Use `docs/screenshots/` as the asset package. Create a professional PDF distinguishing Simulation and Hardware workflows. Do not change application source, business logic, or databases.
-
-Following milestone: **Partner-Ready PPTX**
+Followed by:
+* **Partner-Ready PPTX**
 
 After both documentation deliverables: **Docker + Cloudflare deployment** (manual, by Owner).

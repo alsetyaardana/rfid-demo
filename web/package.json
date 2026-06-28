@@ -12,6 +12,10 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "node scripts/migrate.js",
     "prisma:seed": "tsx prisma/seed.ts",
+    "hardware:init": "node scripts/hardware-init.js",
+    "hardware:backup": "node scripts/hardware-backup.js",
+    "hardware:reset": "node scripts/hardware-reset.js",
+    "hardware:verify": "node scripts/hardware-verify.js",
     "demo:reset": "tsx scripts/reset-demo.ts",
     "demo:scenario": "tsx scripts/run-scenario.ts",
     "mock:rfid": "tsx scripts/mock-rfid-client.ts"

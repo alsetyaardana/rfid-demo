@@ -51,7 +51,30 @@ npm.cmd run prisma:migrate
 
 # Reset simulation.db data
 npm.cmd run demo:reset
+
+# Initialize the Hardware database baseline only
+npm.cmd run hardware:init
+
+# Back up the Hardware database only
+npm.cmd run hardware:backup
+
+# Reset the Hardware database only
+npm.cmd run hardware:reset
+
+# Verify the Hardware database baseline only
+npm.cmd run hardware:verify
 ```
+
+## Hardware Database CLI
+
+Use the Hardware database CLI workflow for `web/prisma/hardware.db` only.
+
+- `npm.cmd run hardware:init` upserts the canonical Hardware locations without creating operational data.
+- `npm.cmd run hardware:backup` writes a timestamped backup under `web/prisma/backups/hardware/`.
+- `npm.cmd run hardware:reset` backs up `hardware.db`, deletes only Hardware DB files, applies Prisma migrations to `file:./hardware.db`, initializes the canonical locations, and verifies the clean baseline.
+- `npm.cmd run hardware:verify` reports the Hardware path, canonical locations, and baseline counts without mutating the database.
+
+Stop the dev server before `hardware:reset` so SQLite is not locked. Do not use `npm.cmd run prisma:migrate` for Hardware-only reset work because it migrates both databases.
 
 Local server:
 
