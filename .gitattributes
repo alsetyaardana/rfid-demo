@@ -1,0 +1,20 @@
+# Binary files — skip diff, merge, and whitespace checks
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.aar binary
+*.jar binary
+*.apk binary
+*.db binary
+*.db-wal binary
+*.db-shm binary
+*.bin binary
+*.dex binary
+*.class binary
+*.ap_ binary
+*.so binary
+*.rar binary
+*.zip binary

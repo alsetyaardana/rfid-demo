@@ -1,23 +1,51 @@
+# Web application
 web/.next/
 web/node_modules/
 web/dist/
 web/coverage/
 web/*.log
+web/tsconfig.tsbuildinfo
+
+# Web databases (runtime, not committed)
 web/prisma/dev.db
 web/prisma/dev.db-journal
+web/prisma/simulation.db
+web/prisma/simulation.db-wal
+web/prisma/simulation.db-shm
 web/prisma/hardware.db
 web/prisma/hardware.db-wal
 web/prisma/hardware.db-shm
 web/prisma/hardware.db.bak-*
 web/prisma/hardware.backup.*.db
 web/prisma/backups/
+
+# Web environment
 web/.env.local
 web/.env
 web/temp/
+
+# Android build artifacts
+android/chainway-edge-app/.gradle/
+android/chainway-edge-app/app/build/
+android/chainway-edge-app/build/
+android/chainway-edge-app/local.properties
 android/build/
 android/.gradle/
 android/local.properties
 android/temp/
 
+# Vendor archives (SDK is already extracted to android/vendor/)
 API_Ver20251103.rar
 Demo-uhf_as.rar
+local-archive/
+
+# Local tool state (machine-specific, not shared)
+.agents/
+.claude/
+
+# Generated output and temporary directories
+output/
+tmp/
+
+# Root-level rendered PDFs (use docs/share/ for tracked deliverables)
+porta-nusa-solution-faq-revised.pdf

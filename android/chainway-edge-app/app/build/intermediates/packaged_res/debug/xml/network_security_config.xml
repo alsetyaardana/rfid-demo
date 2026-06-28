@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">127.0.0.1</domain>
-        <domain includeSubdomains="true">10.0.2.2</domain>
-        <!-- The user's LAN IP will be configured here at runtime, but cleartext is enabled for all for the demo to work without knowing the IP ahead of time. It's safer to just enable it for the demo. -->
-    </domain-config>
-    <base-config cleartextTrafficPermitted="true" />
-</network-security-config>

@@ -7,21 +7,20 @@ Single source of truth for project progress and architecture.
 * **Path:** `C:\Users\Admin\Documents\RFID Demo`
 * **Branch:** `android-integration`
 * **Remote:** `origin/android-integration`
-* **Latest commit:** `858a9e1 fix: align simulation controls and operator guidance`
+* **Latest commit:** `docs: finalize local demo package and repository handoff` (see git log for hash)
 
 ### Recent commits
 
 ```text
+docs: finalize local demo package and repository handoff
+72bf84d feat: add hardware database lifecycle CLI
 858a9e1 fix: align simulation controls and operator guidance
 326a778 docs: complete in-app guides and screenshot package
-7466e0b docs: close RFID read range power control milestone
 ```
 
 ### Working tree status
 
-Not clean. Local runtime/build artifacts are expected (`.gradle/`, `app/build/`, `web/prisma/*.db`, `web/tsconfig.tsbuildinfo`, local backup files). Screenshot asset files may also be locally modified. Do not stage or clean these artifacts blindly.
-
-Current milestone implementation adds uncommitted Hardware database maintenance scripts and documentation under the `web/` and `docs/` surfaces only.
+Clean after final repository closure commit. Runtime/build artifacts (`.gradle/`, `app/build/`, `web/prisma/*.db`, `web/tsconfig.tsbuildinfo`) are now properly gitignored and removed from the index. Android build directories were untracked from the index in the closure commit.
 
 ---
 
@@ -256,9 +255,35 @@ DEPLOYMENT VERIFIED: not claimed.
 | Demo Operator Checklist (in-app) | Complete |
 | Hardware database CLI runbook | Complete |
 | Screenshot asset package | Complete - 22 PNG files (8 Android, 14 Web) |
-| PDF Documentation Package | Not yet created |
-| Partner-Ready PPTX | Not yet created |
-| Docker + Cloudflare deployment | Not yet performed |
+| PDF Documentation Package | **Complete** - `docs/share/porta-nusa-rfid-documentation-package.pdf` |
+| Solution FAQ | **Complete** - `docs/share/porta-nusa-solution-faq.pdf` |
+| Partner-Ready PPTX | Not yet created (deferred) |
+| Docker + Cloudflare deployment | Not yet performed (deferred) |
+
+---
+
+## Repository Closure
+
+### Final Repository Handoff - CLOSED
+
+**Milestone status: CLOSED**
+
+What was completed:
+* `.gitignore` extended: `simulation.db`, `tsconfig.tsbuildinfo`, correct Android build paths (`android/chainway-edge-app/.gradle/`, `android/chainway-edge-app/app/build/`), `.agents/`, `.claude/`, `output/`, `tmp/`, `local-archive/`
+* Tracked build artifacts removed from git index: `android/chainway-edge-app/.gradle/`, `android/chainway-edge-app/app/build/`, `web/prisma/simulation.db`, `web/tsconfig.tsbuildinfo`
+* `docs/share/` created with two partner-safe PDFs and README
+* `docs/internal/` created with source records
+* `tools/docs/` created with PDF generation scripts
+* `README.md` rewritten as comprehensive recovery guide (Node version, setup commands, env vars, database lifecycle, troubleshooting)
+* `CURRENT_STATE.md` and `AGENT_HANDOFF.md` updated to reflect closure
+
+**Verification:**
+* `CODE VERIFIED` - gitignore patterns confirmed against actual tracked/untracked file status
+* `BUILD VERIFIED` - `npm run build` executed and passed
+* `AUTOMATED TESTED` - `hardware:verify` passed
+* PDF existence confirmed: both docs/share/ PDFs present and non-zero
+
+DEPLOYMENT VERIFIED: not claimed.
 
 ---
 
@@ -275,21 +300,17 @@ Deployment has been intentionally deferred. `DEPLOYMENT VERIFIED` is not claimed
 ## Known Limitations and Open Items
 
 * Deployment to `linen.alinktech.my.id` not yet performed
-* PDF documentation package not yet created
-* Partner-ready PPTX not yet created
-* C5 SEND_TO_LAUNDRY accepted-result screenshot not captured
-* C5 `WRONG_BATCH` rejection screenshot not captured
+* Partner-ready PPTX not yet created (deferred beyond current scope)
+* C5 SEND_TO_LAUNDRY accepted-result screenshot not captured (optional enhancement)
+* C5 `WRONG_BATCH` rejection screenshot not captured (optional enhancement)
 * Screenshots reflect environment-specific demo data at time of capture
-* Working tree is not clean (runtime/build artifacts and local DB-related files are present)
-* Runtime database files are tracked in the repository today, so `.gitignore` only protects new artifacts and sidecars unless the index is cleaned in a separate approved change
 
 ---
 
-## Active Next Milestone
+## Project Status
 
-**PDF Documentation Package**
+**Project closed for current local-demo scope.**
 
-Followed by:
-* **Partner-Ready PPTX**
-
-After both documentation deliverables: **Docker + Cloudflare deployment** (manual, by Owner).
+All approved milestones are complete. Next actions (if pursued) are Owner-initiated:
+* Partner-Ready PPTX (deferred)
+* Docker + Cloudflare deployment to `linen.alinktech.my.id` (deferred, manual by Owner)

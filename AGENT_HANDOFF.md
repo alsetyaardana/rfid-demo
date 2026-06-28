@@ -58,19 +58,34 @@ Do not assume a clean working tree. The tree is currently not clean - see `CURRE
   * runbook: `docs/HARDWARE_DATABASE_RUNBOOK.md`
   * `AUTOMATED TESTED`: one-command reset completed on Windows; verifier PASS; Simulation DB unchanged before/after
 
+* **Repository Closure & Final Documentation Package** - Final local-demo scope milestone:
+  * PDF Documentation Package: `docs/share/porta-nusa-rfid-documentation-package.pdf`
+  * Solution FAQ: `docs/share/porta-nusa-solution-faq.pdf`
+  * `docs/share/README.md` for partner-facing context
+  * `.gitignore` corrected and extended
+  * Build artifacts untracked from git index
+  * `README.md` rewritten as recovery guide
+  * `docs/internal/`, `tools/docs/` created
+
 `DEPLOYMENT VERIFIED` is not claimed for any milestone.
 
-### Next milestone
+### Final milestone: Repository Closure - CLOSED
 
-**PDF Documentation Package**
+What was completed:
+* PDF Documentation Package approved: `docs/share/porta-nusa-rfid-documentation-package.pdf`
+* Solution FAQ approved: `docs/share/porta-nusa-solution-faq.pdf`
+* Repository workspace organized: `docs/share/`, `docs/internal/`, `tools/docs/` created
+* `.gitignore` fixed: Android build paths corrected, simulation.db, tsconfig.tsbuildinfo, .agents/, .claude/, output/, tmp/ added
+* Build artifacts untracked from git index
+* `README.md` rewritten as full recovery guide
+* Production deployment deferred: `DEPLOYMENT VERIFIED` not claimed
 
-### Following milestone
+**Project closed for current local-demo scope.**
 
-**Partner-Ready PPTX**
+### Deferred (Owner-initiated if pursued)
 
-### After both documentation deliverables
-
-**Docker + Cloudflare deployment** (`linen.alinktech.my.id`) - manual, by Owner. Intentionally deferred.
+* **Partner-Ready PPTX** — not yet created
+* **Docker + Cloudflare deployment** (`linen.alinktech.my.id`) — manual, by Owner
 
 ---
 
