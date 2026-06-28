@@ -318,3 +318,16 @@ npm.cmd run hardware:verify
 - `local-archive/` — local-only vendor archives
 
 The `.env.example` template (no real secrets) is tracked and safe to commit.
+
+---
+
+## 12. License
+
+This repository is source-available for personal evaluation, education, internal review, and non-commercial demonstration only.
+
+Commercial use, modification, derivative works, production deployment, and redistribution of modified copies are prohibited without prior written permission.
+
+See:
+
+- [`LICENSE`](LICENSE) for source code and application terms.
+- [`docs/share/LICENSE`](docs/share/LICENSE) for the shareable documentation license.
