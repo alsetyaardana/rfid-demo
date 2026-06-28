@@ -4,8 +4,8 @@
 
 * Repository: `RFID Demo`
 * Branch: `android-integration`
-* Latest committed checkpoint: `0b707f5`
-* Commit subject: `feat: poll hardware unknown EPC queue`
+* Latest committed checkpoint: `6dc012f`
+* Commit subject: `fix: support dynamic laundry batch reconciliation`
 * Remote: `origin/android-integration`
 * Deployment: no production/server deployment has been performed.
 
@@ -41,7 +41,7 @@ Do not treat build success as workflow completion, scripts as browser or physica
 * Web-first physical EPC registration.
 * Live Hardware unknown-EPC polling every approximately 2.5 seconds.
 * Physical flow: C5 unknown scan -> `hardware.db` `UNKNOWN_EPC` -> Web queue -> registration -> rescan accepted.
-* Dynamic Laundry Batch and Reconciliation Logic Fix — `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), `BROWSER VERIFIED`. Physical C5 validation pending.
+* Dynamic Laundry Batch and Reconciliation Logic Fix — `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), `BROWSER VERIFIED`, `DEVICE VERIFIED`, `PHYSICALLY VERIFIED`. Milestone closed. Evidence file: `Testing fitur demo rfid.docx`.
 
 Physical EPC registration polling has been `CODE VERIFIED`, `BUILD VERIFIED`, `BROWSER VERIFIED`, `DEVICE VERIFIED`, and `PHYSICALLY VERIFIED`.
 
@@ -91,17 +91,10 @@ No Android registration editor is required. `STOCK_COUNT` is the approved captur
 | `BUILD VERIFIED` | `npx tsc --noEmit` clean; `npx next build` passes all 14 routes |
 | `AUTOMATED TESTED` | 17/17 assertions: Batch A (send → partial → full return), Batch B (independence, wrong-batch rejection, partial return), hardware batch `LB-HW-99` with no `LB-DEMO-001` dependency |
 | `BROWSER VERIFIED` | Hardware mode: `LB-HW-1` Sent 9, Returned 5, Outstanding 4, Status **In Progress**; Reconciliation: Active Batches 1, Total Sent 9, Total Returned 5, Total Outstanding 4; no `LB-DEMO-001` in any hardware response; Simulation empty state confirmed; database isolation confirmed |
+| `DEVICE VERIFIED` | Chainway C5 with real RFID tags in Hardware Mode |
+| `PHYSICALLY VERIFIED` | Two independent batches validated. Dynamic SEND creation passed. Partial return kept In Progress. Wrong-batch return rejected with `WRONG_BATCH`. Repeated return rejected with `ALREADY_RETURNED`. Correct returns affected only the submitted batch. Full return produced Outstanding 0 and Completed status. Completed batches disappeared from Reconciliation. Empty state confirmed after all returns. Physical execution covered equivalent acceptance criteria without following the proposed script step-by-step. Evidence file: `Testing fitur demo rfid.docx`. No deployment verification claimed. |
 
-### Pending physical validation (milestone not fully closed)
-
-The following scenarios must be validated on the physical Chainway C5 device before this milestone is called `PHYSICALLY VERIFIED`:
-
-1. Perform `SEND_TO_LAUNDRY` using a new batch code that does not yet exist in `hardware.db`.
-2. Confirm the batch is created and appears in Reconciliation as In Progress.
-3. Perform a partial `RETURN_FROM_LAUNDRY` for the same batch code; confirm it remains In Progress.
-4. Perform a full `RETURN_FROM_LAUNDRY`; confirm outstanding becomes 0 and status becomes Completed; confirm the batch disappears from Reconciliation.
-5. Attempt a wrong-batch return (a different batch code); confirm the server rejects items with `WRONG_BATCH`.
-6. Confirm correct return affects only the submitted batch and not any other.
+### Milestone status: CLOSED
 
 ## Required Business Rules (for next agent reference)
 
@@ -121,7 +114,7 @@ The following scenarios must be validated on the physical Chainway C5 device bef
 
 ## Next Approved Action
 
-Physical C5 validation of the laundry batch flow using a new batch code (see pending scenarios above). No new milestone should be started until physical validation is complete and approved by the Owner/Architect.
+Dynamic Laundry Batch and Reconciliation Logic Fix milestone is fully closed. No new milestone has been approved. The next action requires Owner/Architect approval.
 
 ## Key Files
 

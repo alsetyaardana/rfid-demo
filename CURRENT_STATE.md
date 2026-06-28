@@ -15,7 +15,7 @@ This document serves as the single source of truth for the project's progress an
 * **Web-First Physical EPC Registration Polling**: Hardware Linen Master polls for physical `UNKNOWN_EPC`s every 2.5 seconds and updates the registration queue without a manual browser refresh.
 * **C5 Physical Upload Validation**: Repository-built APK installed on Chainway C5 and confirmed to upload a fresh `STOCK_COUNT` session to `hardware.db`; the fresh `UNKNOWN_EPC` appeared in the Web registration queue.
 * **Branding**: Full transition to "Porta Nusa Hotel" and "Porta Nusa Operator" branding.
-* **Dynamic Laundry Batch and Reconciliation Logic Fix**: All batch and reconciliation logic corrected. `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), and `BROWSER VERIFIED`. Physical C5 validation pending.
+* **Dynamic Laundry Batch and Reconciliation Logic Fix**: All batch and reconciliation logic corrected. `CODE VERIFIED`, `BUILD VERIFIED`, `AUTOMATED TESTED` (17/17), `BROWSER VERIFIED`, `DEVICE VERIFIED`, and `PHYSICALLY VERIFIED`. Milestone closed. Evidence file: `Testing fitur demo rfid.docx`.
 
 ## Current Architecture
 
@@ -59,16 +59,24 @@ All batch and reconciliation logic has been rewritten to use count-based item qu
 * No `LB-DEMO-001` dependency found in any hardware-mode response.
 * Simulation mode isolated: `LB-HW-1` not visible, empty state rendered correctly.
 
-**Pending physical validation (milestone not fully closed):**
-* Physical C5 `SEND_TO_LAUNDRY` using a new batch code that does not yet exist.
-* Partial return keeps batch In Progress.
-* Full return makes outstanding 0 and status Completed.
-* Wrong-batch return is rejected by the server.
-* Correct return affects only the submitted batch.
+**Physical validation result (milestone closed):**
+* Validated on Chainway C5 with real RFID tags in Hardware Mode.
+* Two independent laundry batches validated.
+* Dynamic `SEND_TO_LAUNDRY` batch creation passed.
+* Partial return kept the batch In Progress.
+* Wrong-batch return rejected with `WRONG_BATCH`.
+* Repeated return rejected with `ALREADY_RETURNED`.
+* Correct returns affected only the submitted batch.
+* Full return produced Outstanding 0 and Completed status.
+* Completed batches disappeared from Reconciliation.
+* Reconciliation empty state confirmed after all outstanding items returned.
+* Physical execution did not follow the proposed script step-by-step but covered equivalent acceptance criteria and passed.
+* Evidence file: `Testing fitur demo rfid.docx`.
+* No deployment verification claimed.
 
 ## Active Defect / Next Approved Milestone
 
-No new defect is currently confirmed. The next action is physical C5 validation to fully close the Dynamic Laundry Batch and Reconciliation Logic Fix milestone, followed by approval of the next milestone from the Owner/Architect.
+No active defect. The Dynamic Laundry Batch and Reconciliation Logic Fix milestone is fully closed. The next milestone requires approval from the Owner/Architect.
 
 ## Later Milestones
 
