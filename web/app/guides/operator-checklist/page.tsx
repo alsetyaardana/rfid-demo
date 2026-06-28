@@ -74,10 +74,10 @@ export default function OperatorChecklist() {
 
         <h3 style={S.h3}>Simulation Mode Data</h3>
         <CheckItem>Sidebar shows Simulation Mode.</CheckItem>
-        <CheckItem>Click <strong>Clear Generated Data</strong> in Simulation Tools.</CheckItem>
-        <CheckItem>Click <strong>Generate Demo Data</strong>. Dashboard shows non-zero linen item count.</CheckItem>
-        <CheckItem>Laundry Batches page shows at least one In Progress batch (from generated data).</CheckItem>
-        <CheckItem>Reconciliation page shows matching outstanding items.</CheckItem>
+        <CheckItem>Open the Dashboard and confirm the <strong>Simulation Data Management</strong> section is visible.</CheckItem>
+        <CheckItem>Click <strong>Clear Generated Data</strong>, then <strong>Generate Demo Data</strong>. Dashboard shows non-zero linen item count.</CheckItem>
+        <CheckItem>Laundry Batches page shows seeded batch state appropriate for the generated dataset.</CheckItem>
+        <CheckItem>Reconciliation page reflects the same seeded simulation state.</CheckItem>
 
         <h3 style={S.h3}>Hardware Mode (if using C5)</h3>
         <CheckItem>Chainway C5 is powered on and <strong>Porta Nusa Operator</strong> app is open.</CheckItem>
@@ -97,39 +97,28 @@ export default function OperatorChecklist() {
       {/* SIMULATION MODE SEQUENCE */}
       <section id="sim-sequence" style={S.section}>
         <h2 style={S.h2}>Simulation Mode Demo Sequence</h2>
-        <p style={S.p}>Target duration: 8–12 minutes. No physical hardware required.</p>
+        <p style={S.p}>Target duration: 5-8 minutes. No physical hardware required.</p>
 
         <h3 style={S.h3}>Opening</h3>
         <CheckItem>Confirm sidebar shows <strong>Simulation Mode</strong> with active status dot.</CheckItem>
-        <CheckItem>Open <strong>Dashboard</strong>. Walk audience through live metric cards.</CheckItem>
+        <CheckItem>Open <strong>Dashboard</strong>. Walk audience through the metric cards and the Simulation Data Management section.</CheckItem>
 
-        <h3 style={S.h3}>STOCK_COUNT</h3>
-        <CheckItem>Navigate to <strong>RFID Scan</strong>.</CheckItem>
-        <CheckItem>Select <strong>STOCK_COUNT</strong> workflow.</CheckItem>
-        <CheckItem>Choose 5–8 linen items and submit session.</CheckItem>
-        <CheckItem>Show accepted results and EPC list in the result summary.</CheckItem>
+        <h3 style={S.h3}>Seeded Dataset Review</h3>
+        <CheckItem>Dashboard: run <strong>Clear Generated Data</strong> then <strong>Generate Demo Data</strong> if a fresh simulation state is needed.</CheckItem>
+        <CheckItem>Navigate to <strong>Linen Master</strong> and confirm the generated items are visible.</CheckItem>
 
-        <h3 style={S.h3}>SEND_TO_LAUNDRY</h3>
-        <CheckItem>RFID Scan → <strong>SEND_TO_LAUNDRY</strong> → batch code <code>LB-SIM-001</code>.</CheckItem>
-        <CheckItem>Select the same items → Submit.</CheckItem>
-        <CheckItem>Navigate to <strong>Laundry Batches</strong> — confirm batch <code>LB-SIM-001</code> appears, status <strong>In Progress</strong>.</CheckItem>
+        <h3 style={S.h3}>Operational State Pages</h3>
+        <CheckItem>Navigate to <strong>Laundry Batches</strong> and explain the currently seeded batch state.</CheckItem>
+        <CheckItem>Navigate to <strong>Reconciliation</strong> and confirm it matches the seeded outstanding state.</CheckItem>
+        <CheckItem>Navigate to <strong>Transaction History</strong> and explain the recorded audit trail.</CheckItem>
 
-        <h3 style={S.h3}>Partial RETURN and Reconciliation</h3>
-        <CheckItem>RFID Scan → <strong>RETURN_FROM_LAUNDRY</strong> → <code>LB-SIM-001</code> → select only half the sent items → Submit.</CheckItem>
-        <CheckItem>Navigate to <strong>Reconciliation</strong> — show outstanding items listed under <code>LB-SIM-001</code>.</CheckItem>
-
-        <h3 style={S.h3}>Wrong-Batch Rejection</h3>
-        <CheckItem>RFID Scan → <strong>RETURN_FROM_LAUNDRY</strong> → enter batch code <code>LB-WRONG</code> → submit with original items.</CheckItem>
-        <CheckItem>Show all results as <code>WRONG_BATCH</code>. Explain the cross-batch safety mechanism.</CheckItem>
-
-        <h3 style={S.h3}>Complete RETURN and Resolution</h3>
-        <CheckItem>RFID Scan → <strong>RETURN_FROM_LAUNDRY</strong> → <code>LB-SIM-001</code> → remaining items → Submit.</CheckItem>
-        <CheckItem>Reconciliation: batch card disappears. Empty state shown.</CheckItem>
-        <CheckItem>Laundry Batches: <code>LB-SIM-001</code> status is now <strong>Completed</strong>.</CheckItem>
+        <h3 style={S.h3}>RFID Session Visibility</h3>
+        <CheckItem>Navigate to <strong>RFID Scan</strong> and present it as a read-only page.</CheckItem>
+        <CheckItem>Use the latest session summary and EPC table to explain accepted versus rejected validations.</CheckItem>
+        <CheckItem>Do not describe or attempt browser-side scan submission from this page.</CheckItem>
 
         <h3 style={S.h3}>Closing</h3>
-        <CheckItem>Navigate to <strong>Transaction History</strong> — show full audit trail including rejected sessions.</CheckItem>
-        <CheckItem>Return to <strong>Dashboard</strong> — outstanding count is now zero.</CheckItem>
+        <CheckItem>Return to <strong>Dashboard</strong> and restate that Simulation Mode and Hardware Mode remain database-isolated.</CheckItem>
       </section>
 
       {/* HARDWARE MODE SEQUENCE */}
@@ -175,11 +164,11 @@ export default function OperatorChecklist() {
         <h3 style={S.h3}>C5 Unavailable or Not Connecting</h3>
         <div style={S.calloutInfo}>
           <strong>Fallback:</strong> Switch the browser to Simulation Mode and continue the demo using the
-          browser-only workflow. All core capabilities (STOCK_COUNT, SEND, RETURN, Reconciliation) are
-          fully demonstrable without physical hardware.
+          seeded browser dataset. Dashboard actions, inventory views, reconciliation, and transaction history
+          remain demonstrable without physical hardware.
         </div>
         <CheckItem>Announce: &ldquo;I&apos;ll demonstrate the same workflow using the built-in simulation engine.&rdquo;</CheckItem>
-        <CheckItem>Clear Generated Data → Generate Demo Data → proceed with Simulation Mode demo sequence.</CheckItem>
+        <CheckItem>Dashboard → Clear Generated Data → Generate Demo Data → proceed with the Simulation Mode demo sequence.</CheckItem>
 
         <h3 style={S.h3}>Web Server Unavailable</h3>
         <CheckItem>Confirm the terminal running <code>npm run dev</code> is still active — no crash or port conflict.</CheckItem>
@@ -209,11 +198,10 @@ export default function OperatorChecklist() {
           <tbody>
             {[
               ["Dashboard with live metrics", "Browser Dashboard page", "High"],
-              ["RFID Scan result showing ACCEPTED items", "RFID Scan result summary", "High"],
-              ["Laundry Batch In Progress with correct Sent count", "Laundry Batches page", "High"],
-              ["Reconciliation showing outstanding items", "Reconciliation page during partial return", "High"],
-              ["Reconciliation empty state after full return", "Reconciliation page", "High"],
-              ["WRONG_BATCH rejection result", "RFID Scan result summary", "Medium"],
+              ["Simulation Data Management actions visible", "Browser Dashboard page", "High"],
+              ["RFID Scan read-only latest session summary", "RFID Scan page", "High"],
+              ["Laundry Batch seeded state", "Laundry Batches page", "High"],
+              ["Reconciliation matching seeded state", "Reconciliation page", "High"],
               ["Transaction History audit trail", "Transaction History page", "Medium"],
               ["C5 app main screen with status", "Physical device or screen recording", "Medium (Hardware only)"],
               ["Browser Linen Master showing unknown EPC in queue", "Linen Master page (Hardware Mode)", "Medium (Hardware only)"],
@@ -275,7 +263,8 @@ export default function OperatorChecklist() {
         <h2 style={S.h2}>Post-Demo Reset and Cleanup</h2>
 
         <h3 style={S.h3}>Simulation Mode</h3>
-        <CheckItem>In the sidebar Simulation Tools: click <strong>Clear Generated Data</strong>.</CheckItem>
+        <CheckItem>Return to the Dashboard and click <strong>Clear Generated Data</strong>.</CheckItem>
+        <CheckItem>Use <strong>Reset Database</strong> only when a full wipe back to base locations is required.</CheckItem>
         <CheckItem>Optionally run <strong>Generate Demo Data</strong> to pre-seed for the next session.</CheckItem>
         <CheckItem>Confirm Dashboard metrics reset to a clean state.</CheckItem>
 

@@ -1,55 +1,54 @@
 import { Badge } from "@/components/ui";
 import Link from "next/link";
 
-export function SimulationScanPanel({ batchCode }: { batchCode: string }) {
+export function SimulationScanPanel({
+  batchCode,
+  latestSession,
+}: {
+  batchCode: string;
+  latestSession?: {
+    transactionType?: string;
+    createdAt?: Date;
+    readerId?: string;
+  };
+}) {
   return (
     <section className="grid-3">
       <article className="card span-2">
         <div className="card-title">
-          <h3>Simulation Controls</h3>
-          <Badge>{batchCode}</Badge>
+          <h3>Simulation Session View</h3>
+          <Badge>Read Only</Badge>
         </div>
-        <div className="segmented" aria-label="Simulation source">
-          <span className="active">Website Simulation</span>
-          <span>Live Device</span>
-        </div>
-        <div style={{ height: 12 }} />
-        <div className="segmented" aria-label="Operation mode">
-          <span className="active">Handheld Operation</span>
-          <span>Fixed Reader Emulator</span>
-        </div>
-        <div className="form-grid" style={{ marginTop: 16 }}>
-          <div className="field">
-            <label>Activity</label>
-            <select defaultValue="send">
-              <option value="send">Send to Laundry</option>
-              <option value="return">Return from Laundry</option>
-            </select>
+        <p className="muted" style={{ marginTop: 16 }}>
+          Simulation Mode does not provide a live browser RFID emulator in this MVP. This page is limited to
+          recorded session visibility for the active <span className="mono">simulation.db</span> dataset.
+        </p>
+        <div className="grid-2" style={{ marginTop: 16 }}>
+          <div className="metric teal" style={{ minHeight: "80px", paddingBottom: 0, borderBottom: "none" }}>
+            <label>Latest Workflow</label>
+            <strong style={{ fontSize: "20px" }}>{latestSession?.transactionType ?? "-"}</strong>
+            <small>{latestSession?.createdAt?.toLocaleString() ?? "No recorded simulation session"}</small>
           </div>
-          <div className="field">
-            <label>Location</label>
-            <select defaultValue="LDY-GATE">
-              <option>Laundry Dispatch Gate</option>
-              <option>Laundry Return Desk</option>
-            </select>
-          </div>
-          <div className="field">
-            <label>Laundry Batch</label>
-            <input className="mono" readOnly value={batchCode} />
-          </div>
-          <div className="field">
-            <label>Reader ID</label>
-            <input className="mono" readOnly value="HH-MGR-04 / FX-LDY-02" />
+          <div className="metric teal" style={{ minHeight: "80px", paddingBottom: 0, borderBottom: "none" }}>
+            <label>Latest Batch</label>
+            <strong style={{ fontSize: "20px" }}>{batchCode}</strong>
+            <small>{latestSession?.readerId ?? "No reader context recorded"}</small>
           </div>
         </div>
       </article>
       <article className="card">
         <div className="card-title">
-          <h3>Fixed Reader Emulator</h3>
-          <Badge>Auto Upload Active</Badge>
+          <h3>Operator Guidance</h3>
+          <Badge>Simulation MVP</Badge>
         </div>
-        <div className="countdown">30s</div>
-        <p className="muted">Reader ID FX-LDY-02 monitors Laundry Dispatch Gate and stores sessions through the shared processing layer.</p>
+        <p className="muted">
+          Use the Dashboard as the canonical location for Generate Demo Data, Clear Generated Data, and Reset Database.
+          Use Transaction History, Laundry Batches, and Reconciliation to explain the seeded workflow state.
+        </p>
+        <div className="button-row" style={{ marginTop: 16 }}>
+          <Link className="btn secondary" href="/">Open Dashboard</Link>
+          <Link className="btn secondary" href="/transaction-history">View Transaction History</Link>
+        </div>
       </article>
     </section>
   );

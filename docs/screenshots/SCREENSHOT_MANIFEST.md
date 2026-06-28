@@ -21,12 +21,12 @@ Environment: Windows 11, Chrome, Next.js dev server. Data reflects environment-s
 | `web/web_05_hw_transaction_history.png` | `/transaction-history` | Hardware | TXN-10002, TXN-10003, TXN-10004 |
 | `web/web_06_hw_device_activity.png` | `/device-activity` | Hardware | Reader activity log |
 | `web/web_07_hw_rfid_scan.png` | `/rfid-scan` | Hardware | RFID Scan page, idle state |
-| `web/web_08_sim_dashboard.png` | `/` — Dashboard | Simulation | Available: 20, Transactions: 2, Outstanding: 0 |
-| `web/web_09_sim_rfid_scan.png` | `/rfid-scan` | Simulation | RFID Scan page with linen selector |
+| `web/web_08_sim_dashboard.png` | `/` — Dashboard | Simulation | Simulation Data Management is the canonical location for Generate, Clear, and Reset actions |
+| `web/web_09_sim_rfid_scan.png` | `/rfid-scan` | Simulation | Read-only latest session visibility page; no live browser scan controls |
 | `web/web_10_guide_system_overview.png` | `/guides/system-overview` | — | Technical Documentation guide, top of page |
-| `web/web_11_guide_simulation.png` | `/guides/simulation` | — | Simulation Mode User Guide, top of page |
+| `web/web_11_guide_simulation.png` | `/guides/simulation` | — | Simulation Mode User Guide, updated for Dashboard-first data management and read-only scan visibility |
 | `web/web_12_guide_hardware.png` | `/guides/hardware` | — | Hardware Mode User Guide, top of page |
-| `web/web_13_guide_operator_checklist.png` | `/guides/operator-checklist` | — | Demo Operator Checklist, top of page |
+| `web/web_13_guide_operator_checklist.png` | `/guides/operator-checklist` | — | Demo Operator Checklist, updated for Dashboard-first Simulation flow |
 
 ---
 

@@ -66,8 +66,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {demoMode === "SIMULATION" && (
             <>
               <h4>Simulation Tools</h4>
-              <button className="nav-button mode-btn" disabled>Generate Demo Data</button>
-              <button className="nav-button mode-btn" disabled>Clear Generated Data</button>
+              <Link className="nav-button mode-btn" href="/">Open Simulation Data Management</Link>
               <Link className="nav-button mode-btn" href="/guides/simulation">Simulation Guidance</Link>
             </>
           )}

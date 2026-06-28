@@ -7,16 +7,16 @@ Single source of truth for project progress and architecture.
 * **Path:** `C:\Users\Admin\Documents\RFID Demo`
 * **Branch:** `android-integration`
 * **Remote:** `origin/android-integration`
-* **Latest commit:** `7466e0b docs: close RFID read range power control milestone`
+* **Latest commit:** `326a778 docs: complete in-app guides and screenshot package`
 
 ### Recent commits
 
 ```
+326a778 docs: complete in-app guides and screenshot package
 7466e0b docs: close RFID read range power control milestone
 c6aa6ce feat: add RFID read range power profile control
 4f3a589 docs: close dynamic laundry reconciliation milestone
 6dc012f fix: support dynamic laundry batch reconciliation
-0b707f5 feat: poll hardware unknown EPC queue
 ```
 
 ### Working tree status
@@ -193,6 +193,36 @@ Assets located at `docs/screenshots/`. Manifest: `docs/screenshots/SCREENSHOT_MA
 * `DEVICE VERIFIED` — 8 Android screenshots captured via ADB from Chainway C5 `636e8268`
 
 Screenshots may reflect environment-specific demo data (simulation.db had 20 items; hardware.db had 3 items at time of capture). Screenshots do not independently constitute physical workflow provenance.
+
+### Simulation UI Consistency & Operator Safety Fix
+
+**Milestone status: CLOSED**
+
+What was implemented:
+* Dashboard `Simulation Data Management` is now the canonical location for `Generate Demo Data`, `Clear Generated Data`, and `Reset Database`
+* Simulation sidebar disabled action affordances were removed and replaced with an `Open Simulation Data Management` link
+* Simulation RFID page was redesigned as a read-only latest-session visibility page; misleading browser-side scan controls and faux telemetry affordances were removed
+* Simulation Guide, Operator Checklist, and System Overview were updated to match the current product behavior
+* Selective screenshots were recaptured: `web_08_sim_dashboard.png`, `web_09_sim_rfid_scan.png`, `web_11_guide_simulation.png`, `web_13_guide_operator_checklist.png`
+
+Files changed:
+* `web/app/page.tsx`
+* `web/app/rfid-scan/page.tsx`
+* `web/components/app-shell.tsx`
+* `web/components/demo-actions.tsx`
+* `web/components/mode-panels/RfidScanPanels.tsx`
+* `web/app/guides/system-overview/page.tsx`
+* `web/app/guides/simulation/page.tsx`
+* `web/app/guides/operator-checklist/page.tsx`
+* `docs/screenshots/SCREENSHOT_MANIFEST.md`
+
+**Verification:**
+* `CODE VERIFIED` — Simulation UI text, navigation, and guide references aligned with the approved behavior
+* `BUILD VERIFIED` — `npx.cmd tsc --noEmit` clean after fresh build; `npm.cmd run build` passed all 17 app routes
+* `BROWSER VERIFIED` — Simulation Dashboard, RFID Scan, Simulation Guide, and Operator Checklist validated on localhost; Dashboard buttons `Clear Generated Data`, `Generate Demo Data`, and `Reset Database` click-tested successfully
+* `BROWSER VERIFIED` — Hardware Dashboard smoke check passed after Simulation changes
+
+DEPLOYMENT VERIFIED: not claimed.
 
 ---
 

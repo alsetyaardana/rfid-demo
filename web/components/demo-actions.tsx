@@ -31,7 +31,7 @@ export function GenerateDataForm() {
         style={{ width: "80px" }}
       />
       <button className="btn primary" disabled={pending || quantity <= 0} onClick={handleGenerate}>
-        Generate Linen Data
+        Generate Demo Data
       </button>
       {error && <span style={{ color: "var(--red-600)", fontSize: "0.875rem" }}>{error}</span>}
     </div>
@@ -50,7 +50,7 @@ export function ClearDataButton() {
         }
       }}
     >
-      Clear Data
+      Clear Generated Data
     </button>
   );
 }

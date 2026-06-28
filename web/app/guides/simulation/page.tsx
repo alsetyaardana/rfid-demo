@@ -29,7 +29,7 @@ const S = {
 const tocItems = [
   ["#enter-sim", "Entering Simulation Mode"],
   ["#data-management", "Data Reset and Seed"],
-  ["#scan", "Simulated RFID Scan"],
+  ["#scan", "Recorded RFID Sessions"],
   ["#linen-master", "Linen Master"],
   ["#laundry-batches", "Laundry Batches"],
   ["#reconciliation", "Reconciliation"],
@@ -76,8 +76,8 @@ export default function SimulationGuide() {
       <section id="data-management" style={S.section}>
         <h2 style={S.h2}>Data Reset and Seed</h2>
         <p style={S.p}>
-          The Simulation Tools panel appears in the sidebar when Simulation Mode is active.
-          It provides two actions to manage synthetic demo data.
+          The Dashboard contains the canonical <strong>Simulation Data Management</strong> section for synthetic
+          demo data operations. The sidebar only links you back to that Dashboard section.
         </p>
         <table style={S.table}>
           <thead>
@@ -92,30 +92,34 @@ export default function SimulationGuide() {
               <td style={S.td}><strong>Clear Generated Data</strong></td>
               <td style={S.td}>Removes all synthetic records from <code>simulation.db</code>, returning the database to an empty state. Use this before a fresh demo run.</td>
             </tr>
+            <tr>
+              <td style={S.td}><strong>Reset Database</strong></td>
+              <td style={S.td}>Performs a full simulation wipe and restores only the base location records. Use this when you need a guaranteed clean slate rather than a simple generated-data clear.</td>
+            </tr>
           </tbody>
         </table>
         <div style={S.calloutWarn}>
-          <strong>Pre-demo recommendation:</strong> Always run <strong>Clear Generated Data</strong> followed by
-          <strong> Generate Demo Data</strong> at the start of each demo session to ensure a clean, consistent
-          starting state.
+          <strong>Pre-demo recommendation:</strong> Start on the Dashboard, run <strong>Clear Generated Data</strong>,
+          then <strong>Generate Demo Data</strong>. Use <strong>Reset Database</strong> only when you need a full
+          reset back to base locations.
         </div>
       </section>
 
       {/* SIMULATED SCAN */}
       <section id="scan" style={S.section}>
-        <h2 style={S.h2}>Simulated RFID Scan</h2>
+        <h2 style={S.h2}>Recorded RFID Sessions</h2>
         <p style={S.p}>
-          The <strong>RFID Scan</strong> page allows you to simulate RFID scan sessions directly from the browser.
-          No physical reader is needed.
+          The <strong>RFID Scan</strong> page in Simulation Mode is a read-only visibility page. It summarizes the
+          most recent recorded session data already stored in <code>simulation.db</code>; it does not provide a live
+          browser-side RFID scanner or transaction submission control.
         </p>
         <Step n={1}>Navigate to <strong>RFID Scan</strong> in the left sidebar.</Step>
-        <Step n={2}>Select a workflow: <strong>STOCK_COUNT</strong>, <strong>SEND_TO_LAUNDRY</strong>, or <strong>RETURN_FROM_LAUNDRY</strong>.</Step>
-        <Step n={3}>For SEND or RETURN, enter a batch code (e.g., <code>LB-SIM-001</code>).</Step>
-        <Step n={4}>Select EPC tags to include in the scan from the available linen items.</Step>
-        <Step n={5}>Click <strong>Submit Session</strong>. The result summary shows accepted and rejected items.</Step>
+        <Step n={2}>Use the top cards to explain the latest recorded workflow, batch context, and validation totals.</Step>
+        <Step n={3}>Use the EPC result table to discuss accepted versus rejected outcomes for the newest recorded session.</Step>
+        <Step n={4}>If you need to change the underlying demo dataset, return to the <strong>Dashboard</strong> and use the Simulation Data Management actions there.</Step>
         <div style={S.calloutTip}>
-          <strong>Tip:</strong> Use the same batch code for SEND and RETURN to demonstrate the full laundry cycle.
-          Try submitting a RETURN with a different batch code to demonstrate <code>WRONG_BATCH</code> rejection.
+          <strong>Operator safety note:</strong> Do not present this page as a live browser RFID emulator.
+          In the current MVP, browser operators manage seeded data from the Dashboard and review recorded outcomes here.
         </div>
       </section>
 
@@ -196,6 +200,7 @@ export default function SimulationGuide() {
           <code> simulation.db</code> and presents the current state at a glance.
         </p>
         <ul style={S.ul}>
+          <li>Canonical Simulation Data Management actions: Generate Demo Data, Clear Generated Data, Reset Database</li>
           <li>Total registered linen items</li>
           <li>Active laundry batches (In Progress)</li>
           <li>Total items outstanding across all batches</li>
@@ -211,30 +216,26 @@ export default function SimulationGuide() {
       <section id="demo-flow" style={S.section}>
         <h2 style={S.h2}>Recommended End-to-End Demo Sequence</h2>
         <p style={S.p}>
-          Use this sequence for a complete, compelling Simulation Mode demonstration. Total time: approximately
-          8–12 minutes.
+          Use this sequence for a safe, consistent Simulation Mode walkthrough. Total time: approximately
+          5-8 minutes.
         </p>
         <Step n={1}><strong>Confirm mode:</strong> Sidebar shows Simulation Mode. Status dot is active.</Step>
-        <Step n={2}><strong>Reset data:</strong> Clear Generated Data → Generate Demo Data.</Step>
-        <Step n={3}><strong>Open Dashboard:</strong> Show live inventory metrics — items registered, no outstanding batches.</Step>
-        <Step n={4}><strong>STOCK_COUNT:</strong> Go to RFID Scan → STOCK_COUNT → select 5–8 linen items → Submit. Show accepted results.</Step>
-        <Step n={5}><strong>SEND_TO_LAUNDRY:</strong> RFID Scan → SEND_TO_LAUNDRY → batch code <code>LB-SIM-001</code> → select same items → Submit. Show accepted.</Step>
-        <Step n={6}><strong>Check Laundry Batches:</strong> Show batch <code>LB-SIM-001</code> In Progress with correct Sent count.</Step>
-        <Step n={7}><strong>Partial RETURN:</strong> RFID Scan → RETURN_FROM_LAUNDRY → batch code <code>LB-SIM-001</code> → select only half the items → Submit.</Step>
-        <Step n={8}><strong>Reconciliation (partial):</strong> Show outstanding items still listed under <code>LB-SIM-001</code>.</Step>
-        <Step n={9}><strong>Wrong-batch rejection demo:</strong> RFID Scan → RETURN_FROM_LAUNDRY → batch code <code>LB-WRONG</code> → submit. Show WRONG_BATCH results.</Step>
-        <Step n={10}><strong>Complete RETURN:</strong> RETURN_FROM_LAUNDRY → <code>LB-SIM-001</code> → remaining items → Submit.</Step>
-        <Step n={11}><strong>Reconciliation (resolved):</strong> Batch disappears. Empty state confirmed.</Step>
-        <Step n={12}><strong>Transaction History:</strong> Show audit trail of all sessions including rejected ones.</Step>
-        <Step n={13}><strong>Dashboard again:</strong> Outstanding count is now zero. Batch count updated.</Step>
+        <Step n={2}><strong>Reset data:</strong> On the Dashboard, run Clear Generated Data, then Generate Demo Data.</Step>
+        <Step n={3}><strong>Dashboard:</strong> Show the metrics and explain that all Simulation Mode actions are managed from this page.</Step>
+        <Step n={4}><strong>Linen Master:</strong> Show the seeded linen inventory now present in <code>simulation.db</code>.</Step>
+        <Step n={5}><strong>Laundry Batches and Reconciliation:</strong> Explain the seeded batch state and any currently outstanding items.</Step>
+        <Step n={6}><strong>Transaction History:</strong> Show the recorded audit trail used to populate the simulation views.</Step>
+        <Step n={7}><strong>RFID Scan page:</strong> Present the latest recorded session summary as read-only validation evidence, not as a live scanner.</Step>
+        <Step n={8}><strong>Close on Dashboard:</strong> Return to the metrics summary and reiterate Simulation versus Hardware database isolation.</Step>
       </section>
 
       {/* CLEANUP */}
       <section id="cleanup" style={S.section}>
         <h2 style={S.h2}>Cleanup and Reset After Demo</h2>
-        <Step n={1}>Go to the sidebar Simulation Tools panel.</Step>
-        <Step n={2}>Click <strong>Clear Generated Data</strong> to wipe all simulation records.</Step>
-        <Step n={3}>Optionally click <strong>Generate Demo Data</strong> to pre-populate for the next session.</Step>
+        <Step n={1}>Return to the <strong>Dashboard</strong>.</Step>
+        <Step n={2}>Use <strong>Clear Generated Data</strong> to wipe generated simulation records.</Step>
+        <Step n={3}>Use <strong>Reset Database</strong> only if you need to restore the simulation database to base locations only.</Step>
+        <Step n={4}>Optionally click <strong>Generate Demo Data</strong> to pre-populate for the next session.</Step>
         <div style={S.calloutWarn}>
           <strong>Do not switch to Hardware Mode</strong> immediately after a simulation demo without
           first confirming with the operator whether hardware data should also be cleared or preserved.

@@ -46,6 +46,7 @@ Do not assume a clean working tree. The tree is currently not clean — see `CUR
 * **RFID Read Range & Power Control** — `CODE VERIFIED`, `BUILD VERIFIED`, `DEVICE VERIFIED`, `PHYSICALLY VERIFIED`. Commit: `c6aa6ce`
 * **In-App Documentation & Demo Readiness** — four guide routes (`/guides/system-overview`, `/guides/simulation`, `/guides/hardware`, `/guides/operator-checklist`). `CODE VERIFIED`, `BUILD VERIFIED`, `BROWSER VERIFIED`
 * **Screenshot Capture** — 22 PNG files (14 web, 8 Android) in `docs/screenshots/`. `BROWSER VERIFIED`, `DEVICE VERIFIED`
+* **Simulation UI Consistency & Operator Safety Fix** — Dashboard is the canonical Simulation data-action surface; Simulation RFID page is read-only; Simulation docs and selective screenshots updated. `CODE VERIFIED`, `BUILD VERIFIED`, `BROWSER VERIFIED`
 
 `DEPLOYMENT VERIFIED` is not claimed for any milestone.
 

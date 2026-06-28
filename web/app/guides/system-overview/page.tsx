@@ -156,8 +156,9 @@ export default function SystemOverviewGuide() {
           <div style={{ ...S.card, borderTop: "3px solid var(--teal)" }}>
             <strong style={{ color: "var(--teal)" }}>Simulation Mode</strong>
             <p style={{ ...S.p, marginTop: "8px" }}>
-              All RFID operations are performed from the browser using synthetic data. No physical hardware required.
-              Data is seeded and reset via the Simulation Tools panel. Reads from and writes to <code>simulation.db</code>.
+              Browser operators work with seeded synthetic data. No physical hardware required. Simulation data
+              is generated, cleared, and reset from the Dashboard&apos;s Simulation Data Management section. Reads from
+              and writes to <code>simulation.db</code>.
             </p>
           </div>
           <div style={{ ...S.card, borderTop: "3px solid var(--navy)" }}>
@@ -194,7 +195,7 @@ export default function SystemOverviewGuide() {
             </tr>
             <tr>
               <td style={S.td}>Populated by</td>
-              <td style={S.td}>Browser simulation actions and seed script</td>
+              <td style={S.td}>Dashboard simulation data-management actions and seed script</td>
               <td style={S.td}>Chainway C5 Android uploads only</td>
             </tr>
             <tr>
@@ -204,7 +205,7 @@ export default function SystemOverviewGuide() {
             </tr>
             <tr>
               <td style={S.td}>Reset / seed</td>
-              <td style={S.td}>Via Simulation Tools UI</td>
+              <td style={S.td}>Via Dashboard Simulation Data Management</td>
               <td style={S.td}>Manual (no UI reset in this MVP)</td>
             </tr>
             <tr>

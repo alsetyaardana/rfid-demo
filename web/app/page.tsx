@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { enumText, Badge, DataTable, Metric, SectionHead } from "@/components/ui";
-import { ResetDemoButton } from "@/components/demo-actions";
 import { getDashboardData, getTransactionHistoryData } from "@/lib/services/queries";
 import { getSimulationMetrics } from "@/lib/services/simulation";
 import { getDb } from "@/lib/db";
@@ -23,7 +22,6 @@ export default async function DashboardPage() {
       <SectionHead
         title="Operations Dashboard"
         body="Real-time view of the active Porta Nusa Hotel linen RFID demo, calculated from persisted SQLite data."
-        action={!isHardware ? <ResetDemoButton /> : undefined}
       />
 
       {!isHardware && (
